@@ -1,19 +1,11 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/chart">Chart</router-link> |
+    <router-link to="/about">Chart</router-link> |
     <router-link to="/supv">SupV</router-link>
   </nav>
   <router-view/>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'App'
-})
-</script>
 
 <style>
 #app {

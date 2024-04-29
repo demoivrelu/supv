@@ -4,41 +4,45 @@
       <div class="sub1"></div>
       <div class="sub3">
         <el-row>
-          <VueDraggable v-model='AAA' animation='150' ghostClass='ghost'
+          <VueDraggable
+            v-model="AAA"
+            animation="150"
+            ghostClass="ghost"
             :group="{ name: 'people', pull: 'clone', put: false }"
-            @clone='onClone' :sort='false'>
-            <el-col
-              @click="handleClick(AAA[0])"
-              class="box">
-              AAA
-            </el-col>
+            @clone="onClone"
+            :sort="false"
+          >
+            <el-col @click="handleClick(AAA[0])" class="box"> AAA </el-col>
           </VueDraggable>
-          <VueDraggable v-model='BBB' animation='150' ghostClass='ghost'
+          <VueDraggable
+            v-model="BBB"
+            animation="150"
+            ghostClass="ghost"
             :group="{ name: 'people', pull: 'clone', put: false }"
-            @clone='onClone' :sort='false'>
-            <el-col
-              @click="handleClick(BBB[0])"
-              class="box">
-              BBB
-            </el-col>
+            @clone="onClone"
+            :sort="false"
+          >
+            <el-col @click="handleClick(BBB[0])" class="box"> BBB </el-col>
           </VueDraggable>
-          <VueDraggable v-model='CCC' animation='150' ghostClass='ghost'
+          <VueDraggable
+            v-model="CCC"
+            animation="150"
+            ghostClass="ghost"
             :group="{ name: 'people', pull: 'clone', put: false }"
-            @clone='onClone' :sort='false'>
-            <el-col
-              @click="handleClick(CCC[0])"
-              class="box">
-              CCC
-            </el-col>
+            @clone="onClone"
+            :sort="false"
+          >
+            <el-col @click="handleClick(CCC[0])" class="box"> CCC </el-col>
           </VueDraggable>
-          <VueDraggable v-model='DDD' animation='150' ghostClass='ghost'
+          <VueDraggable
+            v-model="DDD"
+            animation="150"
+            ghostClass="ghost"
             :group="{ name: 'people', pull: 'clone', put: false }"
-            @clone='onClone' :sort='false'>
-            <el-col
-              @click="handleClick(DDD[0])"
-              class="box">
-              DDD
-            </el-col>
+            @clone="onClone"
+            :sort="false"
+          >
+            <el-col @click="handleClick(DDD[0])" class="box"> DDD </el-col>
           </VueDraggable>
         </el-row>
         <!-- <VueDraggable v-model='list1' animation='150' ghostClass='ghost'
@@ -48,7 +52,17 @@
             {{ item.name }}
           </div>
         </VueDraggable> -->
-        <el-tabs v-model="activeName" ref="tabs" class="hide-tabs-header" style="margin-top: 10%; height:50vh; border: 1px solid; border-radius: 10px;">
+        <el-tabs
+          v-model="activeName"
+          ref="tabs"
+          class="hide-tabs-header"
+          style="
+            margin-top: 10%;
+            height: 50vh;
+            border: 1px solid;
+            border-radius: 10px;
+          "
+        >
           <el-tab-pane label="1" name="first">{{ paraAAA }}</el-tab-pane>
           <el-tab-pane label="2" name="second">{{ paraBBB }}</el-tab-pane>
           <el-tab-pane label="3" name="third">{{ paraCCC }}</el-tab-pane>
@@ -57,13 +71,22 @@
       </div>
       <div class="sub_gap"></div>
       <div class="sub4">
-        <VueDraggable target="tbody" v-model="userList" :animation="150" group='people'
-          ghostClass='ghost'>
+        <VueDraggable
+          target="tbody"
+          v-model="userList"
+          :animation="150"
+          group="people"
+          ghostClass="ghost"
+        >
           <el-table :data="userList">
             <el-table-column label="Name" prop="name" />
             <el-table-column label="Para" prop="para" />
             <el-table-column label="Opt" v-slot="{ row, $index }">
-              <el-button @click="deleteItem(row, $index)" icon="el-icon-delete" circle></el-button>
+              <el-button
+                @click="deleteItem(row, $index)"
+                icon="el-icon-delete"
+                circle
+              ></el-button>
             </el-table-column>
           </el-table>
           {{ userList }}
@@ -73,83 +96,90 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import 'element-plus/theme-chalk/index.css'
-import { getCurrentInstance, onMounted, ref } from 'vue'
-import { VueDraggable } from 'vue-draggable-plus'
-const currentInstance = ref()
-const activeName = ref('second')
-const inputVal = ref('CCC')
-const paraAAA = ref('1')
-const paraBBB = ref('2')
-const paraCCC = ref('3')
-const paraDDD = ref('4')
-const userList = ref([
-])
+<script lang='ts' setup>
+import 'element-plus/theme-chalk/index.css';
+import { getCurrentInstance, onMounted, ref } from 'vue';
+import { VueDraggable } from 'vue-draggable-plus';
 
-const AAA = ref([{
-  name: 'AAA',
-  para: paraAAA
-}])
+const currentInstance = ref();
+const activeName = ref('second');
+const inputVal = ref('CCC');
+const paraAAA = ref('1');
+const paraBBB = ref('2');
+const paraCCC = ref('3');
+const paraDDD = ref('4');
+const userList = ref([]);
 
-const BBB = ref([{
-  name: 'BBB',
-  para: paraBBB
-}])
+const AAA = ref([
+  {
+    name: 'AAA',
+    para: paraAAA,
+  },
+]);
 
-const CCC = ref([{
-  name: 'CCC',
-  para: paraCCC
-}])
+const BBB = ref([
+  {
+    name: 'BBB',
+    para: paraBBB,
+  },
+]);
 
-const DDD = ref([{
-  name: 'DDD',
-  para: paraDDD
-}])
+const CCC = ref([
+  {
+    name: 'CCC',
+    para: paraCCC,
+  },
+]);
+
+const DDD = ref([
+  {
+    name: 'DDD',
+    para: paraDDD,
+  },
+]);
 
 const list1 = ref([
   {
     name: 'AAA',
-    para: paraAAA
+    para: paraAAA,
   },
   {
     name: 'BBB',
-    para: paraBBB
+    para: paraBBB,
   },
   {
     name: inputVal,
-    para: paraCCC
+    para: paraCCC,
   },
   {
     name: 'DDD',
-    para: paraDDD
-  }
-])
-function handleClick (item: any) {
+    para: paraDDD,
+  },
+]);
+function handleClick(item: any) {
   if (item.name === 'AAA') {
-    activeName.value = 'first'
+    activeName.value = 'first';
   }
   if (item.name === 'BBB') {
-    activeName.value = 'second'
+    activeName.value = 'second';
   }
   if (item.name === 'CCC') {
-    activeName.value = 'third'
+    activeName.value = 'third';
   }
   if (item.name === 'DDD') {
-    activeName.value = 'fourth'
+    activeName.value = 'fourth';
   }
 }
-function deleteItem (row: JSON, index: number) {
-  userList.value.splice(index, 1)
+function deleteItem(row: JSON, index: number) {
+  userList.value.splice(index, 1);
 }
-function onClone () {
-  console.log('clone')
+function onClone() {
+  console.log('clone');
 }
 onMounted(() => {
-  currentInstance.value = getCurrentInstance()
-  console.log(currentInstance.value.refs.tabs, '实例')
-})
-
+  currentInstance.value = getCurrentInstance();
+  console.log(currentInstance.value.refs.tabs, '实例');
+});
 </script>
 
 <style>
@@ -161,7 +191,6 @@ onMounted(() => {
 .el-table .el-table__body tr td {
   padding: 10px 0;
   border-bottom: 1px solid #d3dce6;
-  ;
 }
 
 .content {
@@ -180,7 +209,7 @@ onMounted(() => {
 .content .sub3 {
   width: 30%;
 }
-.content .sub_gap{
+.content .sub_gap {
   width: 5%;
 }
 
@@ -192,8 +221,12 @@ onMounted(() => {
   display: none;
 }
 
-.box{
-  border:1px solid; width: 70px; height: 50px; margin: 1%; border-radius: 5px;
+.box {
+  border: 1px solid;
+  width: 70px;
+  height: 50px;
+  margin: 1%;
+  border-radius: 5px;
   margin: 5px;
 }
 </style>
