@@ -1,0 +1,26 @@
+on: push
+
+permissions:
+  contents: write
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+    - run: pwd
+    - uses: actions/checkout@v4
+    # - name: Checkout repository code
+    #   uses: actions/checkout@v2
+    # - name: Setup Node.js
+    #   uses: actions/setup-node@v2
+    #   with:
+    #     node-version: '16.16.0'
+    - name: install modules
+      run: npm install
+    - name: build on
+      run: npm run build 
+    - name: deploy
+      uses: JamesIves/github-pages-deploy-action@v4.6.0
+      with:
+        branch: gh-pages
+        folder: dist
