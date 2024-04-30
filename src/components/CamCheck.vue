@@ -123,6 +123,7 @@ export default {
       axios
         .post('/srv/GET-MONITOR', {})
         .then((res) => {
+          console.log(res.data);
           if (res.data.MonitorSig === true) {
             this.openFullScreen2();
           }

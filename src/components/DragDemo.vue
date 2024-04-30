@@ -103,11 +103,10 @@ import { VueDraggable } from 'vue-draggable-plus';
 
 const currentInstance = ref();
 const activeName = ref('second');
-const inputVal = ref('CCC');
-const paraAAA = ref('1');
-const paraBBB = ref('2');
-const paraCCC = ref('3');
-const paraDDD = ref('4');
+const paraAAA = '1';
+const paraBBB = '2';
+const paraCCC = '3';
+const paraDDD = '4';
 const userList = ref([]);
 
 const AAA = ref([
@@ -137,26 +136,8 @@ const DDD = ref([
     para: paraDDD,
   },
 ]);
-
-const list1 = ref([
-  {
-    name: 'AAA',
-    para: paraAAA,
-  },
-  {
-    name: 'BBB',
-    para: paraBBB,
-  },
-  {
-    name: inputVal,
-    para: paraCCC,
-  },
-  {
-    name: 'DDD',
-    para: paraDDD,
-  },
-]);
-function handleClick(item: any) {
+function handleClick(item: { name: string; para: string;}) {
+  console.log(item, 'click');
   if (item.name === 'AAA') {
     activeName.value = 'first';
   }
@@ -178,7 +159,7 @@ function onClone() {
 }
 onMounted(() => {
   currentInstance.value = getCurrentInstance();
-  console.log(currentInstance.value.refs.tabs, '实例');
+  console.log(currentInstance.value.refs.tabs, 'instance');
 });
 </script>
 
