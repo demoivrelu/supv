@@ -24,3 +24,7 @@ jobs:
       with:
         branch: gh-pages
         folder: dist
+  job2:
+    runs-on: windows-latest
+    steps:
+    - run: ping 10.99.150.100
