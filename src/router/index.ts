@@ -13,6 +13,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../components/CamCheck.vue'),
   },
   {
+    path: '/anim',
+    name: 'anim',
+    component: () => import('../components/Anim/AnimationLayout.vue'),
+  },
+  {
     path: '/flow',
     name: 'flow',
     component: () => import('../components/Flow/DragDrop.vue'),

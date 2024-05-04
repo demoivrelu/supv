@@ -33,7 +33,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
+, "src/components/Anim/useShuffle.js"  ],
   "exclude": [
     "node_modules"
   ]
