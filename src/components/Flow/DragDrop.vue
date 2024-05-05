@@ -17,7 +17,7 @@ onConnect(addEdges);
 </script>
 
 <template>
-  <div class="dndflow" @drop="onDrop">
+  <div class="dndflow" @drop="onDrop(nodes)">
     <VueFlow :nodes="nodes" @dragover="onDragOver" @dragleave="onDragLeave">
       <DropzoneBackground
         :style="{

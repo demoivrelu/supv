@@ -218,10 +218,10 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
 
           runningTasks.delete(node.id);
 
-          if (children.length > 0) {
-            // run the process on the children in parallel
-            await Promise.all(children.map((id) => runNode({ id })));
-          }
+          // if (children.length > 0) {
+          //   // run the process on the children in parallel
+          //   await Promise.all(children.map((id) => runNode({ id })));
+          // }
 
           resolve();
         },

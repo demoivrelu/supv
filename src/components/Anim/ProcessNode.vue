@@ -62,7 +62,7 @@ const processLabel = toRef(() => {
 });
 
 function read() {
-  console.log(props.data);
+  console.log('#####', props.data, isReceiver, isSender);
 }
 defineExpose({
   read,

@@ -2,12 +2,20 @@ const position = { x: 0, y: 0 };
 const nodeType = 'process';
 const edgeType = 'animation';
 
+const defaultNodeStyle = {
+  backgroundColor: '#ffffff',
+  backgroundImage: '~@/assets/img/arm.jpg',
+  label: 'Node 1',
+  hidden: false,
+};
+
 export const initialNodes = [
   {
     id: '1',
     position,
-    type: nodeType,
-    // style: defaultNodeStyle,
+    // type: nodeType,
+    style: defaultNodeStyle,
+    // image: '../../assets/img/arm.jpg',
     // backgroundImage: new URL('./assets/image.png'),
   },
   {

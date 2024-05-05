@@ -1,6 +1,6 @@
 <script setup lan='ts'>
 import {
-  nextTick, ref, onMounted, defineExpose,
+  nextTick, ref, onMounted,
 } from 'vue';
 import { Panel, VueFlow, useVueFlow } from '@vue-flow/core';
 import { Background } from '@vue-flow/background';
@@ -12,44 +12,48 @@ import { initialEdges, initialNodes } from './initial-elements';
 import { useRunProcess } from './useRunProcess';
 import { useShuffle } from './useShuffle';
 import { useLayout } from './useLayout';
+
 import Sidebar from '../Flow/SideBar.vue';
 import useDragAndDrop from '../Flow/useDnD';
 import DropzoneBackground from '../Flow/DropzoneBackground.vue';
 
 const {
-  onDragOver, onDrop, onDragLeave, isDragOver, test,
+  onDragOver, onDrop, onDragLeave, isDragOver,
 } = useDragAndDrop();
-const { onConnect, addEdges } = useVueFlow();
+
 const edgeID = ref('e1-2');
 const nodeID = ref(0);
 const anim = ref(null);
 const proc = ref(null);
 
 const nodes = ref(initialNodes);
+// const nodes = ref([]);
 const edges = ref(initialEdges);
-onConnect((params) => {
-  console.log(params);
-  const edge = {
-    id: 'e6-7',
-    type: 'animation',
-    source: params.source,
-    target: params.target,
-    animated: true,
-    // sourceHandle: params.sourceHandle,
-    // targetHandle: params.targetHandle,
-  };
-  console.log(edge);
-  addEdges([edge]);
-  edges.value.push(edge);
-  console.log(edges);
-});
 const cancelOnError = ref(true);
 const shuffle = useShuffle();
 const { graph, layout, previousDirection } = useLayout();
 const {
   run, stop, reset, isRunning, singleRunNode,
 } = useRunProcess({ graph, cancelOnError });
-const { fitView } = useVueFlow();
+const { fitView, onConnect, addEdges } = useVueFlow();
+// onConnect(addEdges);
+onConnect((params) => {
+  const edge = {
+    id: 'e6-7',
+    type: 'animation',
+    label: '测试',
+    source: params.source,
+    target: params.target,
+    sourceHandle: params.sourceHandle,
+    targetHandle: params.targetHandle,
+  };
+  console.log(params);
+  console.log(edge);
+  addEdges([edge]);
+  edges.value.push(edge);
+  console.log(edges);
+});
+
 async function layoutGraph(direction) {
   await stop();
   reset(nodes.value);
@@ -74,18 +78,17 @@ async function edgeRun(_val) {
 }
 
 onMounted(() => {
-  console.log(AnimationEdge);
+  // console.log(AnimationEdge);
   // setInterval(() => {
   //   proc.value.read();
-  //   console.log(nodes);
-  //   console.log('procdata !!!!!!!!!!', proc.value);
+  //   console.log(anim.value);
+  //   console.log(edgeID);
   // }, 2000);
 });
-defineExpose({ nodes });
 </script>
 
 <template>
-  <div class="layout-flow" @drop="onDrop(nodes), test(nodes)">
+  <div class="layout-flow" @drop="onDrop">
     <el-row>
       run edge
       <el-button @click="edgeRun(edgeID)">edge</el-button>
@@ -96,65 +99,67 @@ defineExpose({ nodes });
       <el-button @click="singleRunNode(nodes[nodeID], false)">node</el-button>
       <el-input v-model="nodeID" style="width:200px"></el-input>
     </el-row>
-        <Sidebar />
-
-    <VueFlow
-      @dragover="onDragOver" @dragleave="onDragLeave(nodes)"
-      :nodes="nodes"
-      :edges="edges"
-    >
-      <template #node-process="props">
-        <ProcessNode ref="proc"
-          :data="props.data"
-          :source-position="props.sourcePosition"
-          :target-position="props.targetPosition"
+      <Sidebar />
+      <VueFlow
+        @dragover="onDragOver" @dragleave="onDragLeave"
+        :nodes="nodes"
+        :edges="edges"
+      >
+        <DropzoneBackground
+          :style="{
+            backgroundColor: isDragOver ? '#e7f3ff' : 'transparent',
+            transition: 'background-color 0.2s ease',
+          }"
         />
-      </template>
+        <template #node-process="props">
+          <ProcessNode ref="proc"
+            :data="props.data"
+            :source-position="props.sourcePosition"
+            :target-position="props.targetPosition"
+          />
+        </template>
 
-      <template #edge-animation="edgeProps">
-        <AnimationEdge ref="anim"
-          :id="edgeProps.id"
-          :source="edgeProps.source"
-          :target="edgeProps.target"
-          :source-x="edgeProps.sourceX"
-          :source-y="edgeProps.sourceY"
-          :targetX="edgeProps.targetX"
-          :targetY="edgeProps.targetY"
-          :source-position="edgeProps.sourcePosition"
-          :target-position="edgeProps.targetPosition"
-        />
-      </template>
+        <template #edge-animation="edgeProps">
+          <AnimationEdge ref="anim"
+            :id="edgeProps.id"
+            :source="edgeProps.source"
+            :target="edgeProps.target"
+            :source-x="edgeProps.sourceX"
+            :source-y="edgeProps.sourceY"
+            :targetX="edgeProps.targetX"
+            :targetY="edgeProps.targetY"
+            :source-position="edgeProps.sourcePosition"
+            :target-position="edgeProps.targetPosition"
+          />
+        </template>
 
-      <!-- <Background /> -->
+        <Background />
+        <Panel class="process-panel" position="top-right">
+          <div class="layout-panel">
+            <button v-if="isRunning" class="stop-btn" title="stop" @click="stop">
+              <IconIcon name="stop" />
+              <span class="spinner" />
+            </button>
+            <button v-else title="start" @click="run(nodes)">
+              <IconIcon name="play" />
+            </button>
 
-      <Panel class="process-panel" position="top-right">
-        <div class="layout-panel">
-          <button v-if="isRunning" class="stop-btn" title="stop" @click="stop">
-            <IconIcon name="stop" />
-            <span class="spinner" />
-          </button>
-          <button v-else title="start" @click="run(nodes)">
-            <IconIcon name="play" />
-          </button>
+            <button title="set horizontal layout" @click="layoutGraph('LR')">
+              <IconIcon name="horizontal" />
+            </button>
 
-          <button title="set horizontal layout" @click="layoutGraph('LR')">
-            <IconIcon name="horizontal" />
-          </button>
+            <button title="set vertical layout" @click="layoutGraph('TB')">
+              <IconIcon name="vertical" />
+            </button>
 
-          <button title="set vertical layout" @click="layoutGraph('TB')">
-            <IconIcon name="vertical" />
-          </button>
-
-          <button title="shuffle graph" @click="shuffleGraph">
-            <IconIcon name="shuffle" />
-          </button>
-        </div>
-        <div class="checkbox-panel">
-          <!-- <label for="inp">Cancel on error</label>
-          <input v-model="cancelOnError" type="checkbox" id="inp" name="inp" /> -->
-        </div>
-      </Panel>
-    </VueFlow>
+            <button title="shuffle graph" @click="shuffleGraph">
+              <IconIcon name="shuffle" />
+            </button>
+          </div>
+          <div class="checkbox-panel">
+          </div>
+        </Panel>
+      </VueFlow>
   </div>
 </template>
 

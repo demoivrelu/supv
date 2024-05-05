@@ -70,7 +70,8 @@ export default function useDragAndDrop() {
     }
   }
 
-  function onDragLeave() {
+  function onDragLeave(_nodes) {
+    console.log('get nodes .....', _nodes);
     isDragOver.value = false;
   }
 
@@ -79,19 +80,25 @@ export default function useDragAndDrop() {
    *
    * @param {DragEvent} event
    */
-  function onDrop(event) {
-    const position = screenToFlowCoordinate({
-      x: event.clientX,
-      y: event.clientY,
-    });
-
+  function onDrop(_nodes) {
+    console.log('get nodes .....', _nodes);
+    // const position = screenToFlowCoordinate({
+    //   x: event.clientX,
+    //   y: event.clientY,
+    // });
+    const position = { x: 0, y: 0 };
     const nodeId = getId();
 
     const newNode = {
       id: nodeId,
-      type: draggedType.value,
+      // id: '7',
+      // type: draggedType.value,
+      type: 'default',
       position,
-      label: `[${nodeId}]`,
+      targetPosition: 'left',
+      sourcePosition: 'right',
+      isSender: true,
+      // label: `[${nodeId}]`,
     };
 
     /**
@@ -108,8 +115,13 @@ export default function useDragAndDrop() {
 
       off();
     });
-
+    console.log('added: ', newNode);
     addNodes(newNode);
+    _nodes.push(newNode);
+  }
+
+  function test(_nodes) {
+    console.log(_nodes);
   }
 
   return {
@@ -120,5 +132,6 @@ export default function useDragAndDrop() {
     onDragLeave,
     onDragOver,
     onDrop,
+    test,
   };
 }
