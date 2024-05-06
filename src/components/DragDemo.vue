@@ -12,7 +12,7 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(AAA[0])" class="box"> AAA </el-col>
+            <el-col @click="handleClick(AAA[0])" class="box"> Unchained </el-col>
           </VueDraggable>
           <VueDraggable
             v-model="BBB"
@@ -63,7 +63,62 @@
             border-radius: 10px;
           "
         >
-          <el-tab-pane label="1" name="first">{{ paraAAA }}</el-tab-pane>
+          <el-tab-pane label="1" name="first" align="center">
+            <el-row style="margin-top: 3%;">
+              <el-col :span="10">
+                CMD
+              </el-col>
+              <el-col :span="11">
+                <el-select v-model="CmdUnchainedVal" placeholder="Choose">
+                  <el-option v-for="item in CmdUnchained" :key="item.value" :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+            <el-form v-if="CmdUnchainedVal == 'INIT'" ref="form-unchained" :label-position="'right'"
+              style="width: 80%; margin-top: 3%;">
+              <el-form-item label="ProjectName">
+                <el-input v-model="unchainedPara.ProjectName"></el-input>
+              </el-form-item>
+              <el-form-item label="ChooseDesignID">
+                <el-input v-model="unchainedPara.ChooseDesignID"></el-input>
+              </el-form-item>
+              <!-- <el-form-item label="UseLsrFile">
+                <el-switch
+                  v-model="unchainedPara.UseLsrFile">
+                </el-switch>
+              </el-form-item>
+              <el-form-item label="LsrFilePath">
+                <el-input v-model="unchainedPara.LsrFilePath"></el-input>
+              </el-form-item> -->
+              <!-- <el-form-item label="LastLibraryID">
+                <el-input v-model="unchainedPara.LastLibraryID"></el-input>
+              </el-form-item> -->
+              <el-form-item label="SetPrompts">
+                <el-input v-model="unchainedPara.SetPrompts"></el-input>
+              </el-form-item>
+              <el-form-item label="SetChemicalManager">
+                <el-input v-model="unchainedPara.SetChemicalManager"></el-input>
+              </el-form-item>
+              <el-form-item label="SetTipManagement">
+                <el-input v-model="unchainedPara.SetTipManagement"></el-input>
+              </el-form-item>
+              <!-- <el-form-item label="UseAI">
+                <el-switch
+                  v-model="unchainedPara.UseAI">
+                </el-switch>
+              </el-form-item>
+              <el-form-item label="NewDesign">
+                <el-switch
+                  v-model="unchainedPara.NewDesign">
+                </el-switch>
+              </el-form-item> -->
+              <!-- <el-form-item label="ParaChanger">
+                <el-input v-model="unchainedPara.ParaChanger"></el-input>
+              </el-form-item> -->
+            </el-form>
+          </el-tab-pane>
           <el-tab-pane label="2" name="second">{{ paraBBB }}</el-tab-pane>
           <el-tab-pane label="3" name="third">{{ paraCCC }}</el-tab-pane>
           <el-tab-pane label="4" name="fourth">{{ paraDDD }}</el-tab-pane>
@@ -80,7 +135,38 @@
         >
           <el-table :data="userList">
             <el-table-column label="Name" prop="name" />
-            <el-table-column label="Para" prop="para" />
+            <el-table-column label="CMD" prop="cmd" />
+            <el-table-column label="Para" prop="para" :width="'200px'">
+              <template v-slot="scope">
+                <el-input type="textarea" :rows="3" v-model="scope.row['para']"></el-input>
+            </template>
+            </el-table-column>
+            <el-table-column prop="RemotePath" label="RemotePath">
+              <template v-slot="scope">
+                <el-input type="textarea" :rows="2" v-model="scope.row['RemotePath']">
+                </el-input>
+              </template>
+            </el-table-column>
+            <el-table-column prop="LocalPath" label="LocalPath">
+              <template v-slot="scope">
+                <el-input type="textarea" :rows="2" v-model="scope.row['LocalPath']"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column prop="Time" label="Time(s)">
+              <template v-slot="scope">
+                <el-input type="textarea" :rows="1" v-model="scope.row['Time']"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column prop="Parallel" label="Parallel">
+              <template v-slot="scope">
+                <el-switch v-model="scope.row['Parallel']"></el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column prop="Release" label="Release">
+              <template v-slot="scope">
+                <el-switch v-model="scope.row['Release']"></el-switch>
+              </template>
+            </el-table-column>
             <el-table-column label="Opt" v-slot="{ row, $index }">
               <el-button
                 @click="deleteItem(row, $index)"
@@ -98,12 +184,81 @@
 
 <script lang='ts' setup>
 import 'element-plus/theme-chalk/index.css';
-import { getCurrentInstance, onMounted, ref } from 'vue';
+import {
+  getCurrentInstance, onMounted, ref, reactive,
+} from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
+
+// const form = {
+//   name: '',
+//   region: '',
+//   date1: '',
+//   date2: '',
+//   delivery: false,
+//   type: [],
+//   resource: '',
+//   desc: '',
+// };
+
+const CmdUnchained = [{
+  value: 'START',
+  label: 'START',
+},
+{
+  value: 'INIT',
+  label: 'INIT',
+}];
+const CmdUnchainedVal = ref(CmdUnchained[1].value);
+// const unchainedPart = {
+//   title: 'Unchained',
+//   titles: [
+//     'ProjectName',
+//     'ChooseDesignID',
+//     'LsrFilePath',
+//     'UseLsrFile',
+//     'LastLibraryID',
+//     'SetPrompts',
+//     'SetChemicalManager',
+//     'SetTipManagement',
+//     'UseAI',
+//     'NewDesign',
+//     'ParaChanger',
+//   ],
+// };
+
+// const ProjectName = ref('');
+// const ChooseDesignID = ref('');
+// const LsrFilePath = ref('');
+// const UseLsrFile = ref(false);
+// const LastLibraryID = ref('');
+// const SetPrompts = ref('');
+// const SetChemicalManager = ref('');
+// const SetTipManagement = ref('');
+// const UseAI = ref(false);
+// const NewDesign = ref(false);
+// const ParaChanger = ref('');
+
+const unchainedPara = reactive({
+  ProjectName: '',
+  ChooseDesignID: '',
+  LsrFilePath: '',
+  UseLsrFile: false,
+  LastLibraryID: '',
+  SetPrompts: '',
+  SetChemicalManager: '',
+  SetTipManagement: '',
+  UseAI: false,
+  NewDesign: false,
+  ParaChanger: '',
+});
+
+// function con() {
+//   console.log(unchainedPara);
+// }
 
 const currentInstance = ref();
 const activeName = ref('second');
-const paraAAA = '1';
+// const paraAAA = '1';
 const paraBBB = '2';
 const paraCCC = '3';
 const paraDDD = '4';
@@ -111,8 +266,14 @@ const userList = ref([]);
 
 const AAA = ref([
   {
-    name: 'AAA',
-    para: paraAAA,
+    name: 'Unchained',
+    cmd: CmdUnchainedVal,
+    para: JSON.stringify(unchainedPara),
+    remotepath: '',
+    localpath: '',
+    time: 3600,
+    parallel: false,
+    release: false,
   },
 ]);
 
@@ -138,7 +299,7 @@ const DDD = ref([
 ]);
 function handleClick(item: { name: string; para: string;}) {
   console.log(item, 'click');
-  if (item.name === 'AAA') {
+  if (item.name === 'Unchained') {
     activeName.value = 'first';
   }
   if (item.name === 'BBB') {
@@ -204,7 +365,7 @@ onMounted(() => {
 
 .box {
   border: 1px solid;
-  width: 70px;
+  width: 80px;
   height: 50px;
   margin: 1%;
   border-radius: 5px;
