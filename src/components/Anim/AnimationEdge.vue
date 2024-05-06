@@ -118,12 +118,13 @@ watch(edgePoint, (point) => {
   labelPosition.value = pathEl.getPointAtLength(point);
 });
 console.log('isfinish: ', isFinished);
-watch(isFinished, (isFinished) => {
-  console.log('isfinish: ', isFinished);
-  if (isFinished) {
-    runAnimation();
-  }
-});
+// if simulate hole progress open this
+// watch(isFinished, (isFinished) => {
+//   console.log('isfinish: ', isFinished);
+//   if (isFinished) {
+//     runAnimation();
+//   }
+// });
 
 async function runAnimation() {
   const pathEl = edgeRef.value?.pathEl;

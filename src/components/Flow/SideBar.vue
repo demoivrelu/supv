@@ -9,9 +9,12 @@ const { onDragStart } = useDragAndDrop();
     <div class="description">You can drag these nodes to the pane.</div>
 
     <div class="nodes">
-      <div class="vue-flow__node-input" :draggable="true" @dragstart="onDragStart($event, 'input')">
+      <!-- <div class="vue-flow__node-input"
+        :draggable="true"
+        @dragstart="onDragStart($event, 'input')"
+      >
         Input Node
-      </div>
+      </div> -->
       <div
         class="vue-flow__node-default"
         :draggable="true"
@@ -19,13 +22,13 @@ const { onDragStart } = useDragAndDrop();
       >
         Default Node
       </div>
-      <div
+      <!-- <div
         class="vue-flow__node-output"
         :draggable="true"
         @dragstart="onDragStart($event, 'output')"
       >
         Output Node
-      </div>
+      </div> -->
     </div>
   </aside>
 </template>

@@ -148,7 +148,7 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
           updateNodeData(node.id, { isRunning: false, isFinished: true });
 
           runningTasks.delete(node.id);
-
+          console.log('..........children', children);
           if (children.length > 0) {
             // run the process on the children in parallel
             await Promise.all(children.map((id) => runNode({ id })));
@@ -195,7 +195,7 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
     return new Promise((resolve) => {
       const timeout = setTimeout(
         async () => {
-          const children = graph.value.successors(node.id);
+          // const children = graph.value.successors(node.id);
 
           // randomly decide whether the node will throw an error
           // const willThrowError = Math.random() < 0.15;
@@ -217,7 +217,7 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
           updateNodeData(node.id, { isRunning: false, isFinished: true });
 
           runningTasks.delete(node.id);
-
+          // console.log('..........children', children);
           // if (children.length > 0) {
           //   // run the process on the children in parallel
           //   await Promise.all(children.map((id) => runNode({ id })));

@@ -77,8 +77,10 @@ defineExpose({
       boxShadow: data.isRunning ? '0 0 10px rgba(0, 0, 0, 0.5)' : '',
     }"
   >
+  <!-- <div
+  > -->
     <Handle v-if="!isSender" type="target" :position="targetPosition">
-      <span
+      <!-- <span
         v-if="
           !data.isRunning &&
           !data.isFinished &&
@@ -87,7 +89,7 @@ defineExpose({
           !data.hasError
         "
         >📥
-      </span>
+      </span> -->
     </Handle>
     <Handle v-if="!isReceiver" type="source" :position="sourcePosition" />
 

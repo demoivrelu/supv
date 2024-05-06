@@ -1,15 +1,16 @@
 import { useVueFlow } from '@vue-flow/core';
 import { ref, watch } from 'vue';
+// import { useRunProcess } from '../Anim/useRunProcess';
 
-let id = 0;
+// let id = 0;
 
-/**
- * @returns {string} - A unique id.
- */
-function getId() {
-  id += 1;
-  return `dndnode_${id}`;
-}
+// /**
+//  * @returns {string} - A unique id.
+//  */
+// function getId() {
+//   id += 1;
+//   return `dndnode_${id}`;
+// }
 
 /**
  * @type {{draggedType: Ref<string|null>, isDragOver: Ref<boolean>, isDragging: Ref<boolean>}}
@@ -27,9 +28,11 @@ export default function useDragAndDrop() {
   const { draggedType, isDragOver, isDragging } = state;
 
   const {
-    addNodes, screenToFlowCoordinate, onNodesInitialized, updateNode,
+    addNodes,
   } = useVueFlow();
-
+  // const {
+  //   addNodes, screenToFlowCoordinate, onNodesInitialized, updateNode, updateNodeData,
+  // } = useVueFlow();
   watch(isDragging, (dragging) => {
     document.body.style.userSelect = dragging ? 'none' : '';
   });
@@ -80,24 +83,24 @@ export default function useDragAndDrop() {
    *
    * @param {DragEvent} event
    */
-  function onDrop(_nodes) {
+  function onDrop(_nodes, _edges) {
     console.log('get nodes .....', _nodes);
     // const position = screenToFlowCoordinate({
     //   x: event.clientX,
     //   y: event.clientY,
     // });
     const position = { x: 0, y: 0 };
-    const nodeId = getId();
+    // const nodeId = getId();
 
+    const len = _nodes.length;
     const newNode = {
-      id: nodeId,
-      // id: '7',
+      // id: nodeId,
+      id: String(len),
       // type: draggedType.value,
-      type: 'default',
+      type: 'process',
       position,
       targetPosition: 'left',
       sourcePosition: 'right',
-      isSender: true,
       // label: `[${nodeId}]`,
     };
 
@@ -105,22 +108,33 @@ export default function useDragAndDrop() {
      * Align node position after drop, so it's centered to the mouse
      *
      */
-    const { off } = onNodesInitialized(() => {
-      updateNode(nodeId, (node) => ({
-        position: {
-          x: node.position.x - node.dimensions.width / 2,
-          y: node.position.y - node.dimensions.height / 2,
-        },
-      }));
+    // const { off } = onNodesInitialized(() => {
+    //   updateNode(nodeId, (node) => ({
+    //     position: {
+    //       x: node.position.x - node.dimensions.width / 2,
+    //       y: node.position.y - node.dimensions.height / 2,
+    //     },
+    //   }));
 
-      off();
-    });
-    console.log('added: ', newNode);
+    //   off();
+    // });
     addNodes(newNode);
     _nodes.push(newNode);
+
+    _edges.push({
+      id: 'random',
+      source: newNode.id,
+      target: newNode.id,
+      type: 'animation',
+      animated: true,
+    });
+    // const {
+    //   run, stop, reset, isRunning, singleRunNode,
+    // } = useRunProcess({ _graph, _cancelOnError });
+    // reset(_nodes);
   }
 
-  function test(_nodes) {
+  function addSingleNode(_nodes) {
     console.log(_nodes);
   }
 
@@ -132,6 +146,6 @@ export default function useDragAndDrop() {
     onDragLeave,
     onDragOver,
     onDrop,
-    test,
+    addSingleNode,
   };
 }

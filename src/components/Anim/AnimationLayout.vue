@@ -14,10 +14,13 @@ import { useShuffle } from './useShuffle';
 import { useLayout } from './useLayout';
 import Sidebar from '../Flow/SideBar.vue';
 import useDragAndDrop from '../Flow/useDnD';
-import DropzoneBackground from '../Flow/DropzoneBackground.vue';
+// import DropzoneBackground from '../Flow/DropzoneBackground.vue';
 
+// const {
+//   onDragOver, onDrop, onDragLeave, isDragOver, addSingleNode,
+// } = useDragAndDrop();
 const {
-  onDragOver, onDrop, onDragLeave, isDragOver, test,
+  onDragOver, onDrop, onDragLeave, addSingleNode,
 } = useDragAndDrop();
 const { onConnect, addEdges } = useVueFlow();
 const edgeID = ref('e1-2');
@@ -28,9 +31,9 @@ const proc = ref(null);
 const nodes = ref(initialNodes);
 const edges = ref(initialEdges);
 onConnect((params) => {
-  console.log(params);
+  console.log('$$$params', params);
   const edge = {
-    id: 'e6-7',
+    id: `e${params.source}-${params.target}`,
     type: 'animation',
     source: params.source,
     target: params.target,
@@ -74,18 +77,19 @@ async function edgeRun(_val) {
 }
 
 onMounted(() => {
+  layoutGraph('LR');
   console.log(AnimationEdge);
-  // setInterval(() => {
-  //   proc.value.read();
-  //   console.log(nodes);
-  //   console.log('procdata !!!!!!!!!!', proc.value);
-  // }, 2000);
+  setInterval(() => {
+    // proc.value.read();
+    console.log(nodes, edges);
+    // console.log('procdata !!!!!!!!!!', proc.value);
+  }, 2000);
 });
 defineExpose({ nodes });
 </script>
 
 <template>
-  <div class="layout-flow" @drop="onDrop(nodes), test(nodes)">
+  <div class="layout-flow" @drop="onDrop(nodes, edges), addSingleNode(nodes)">
     <el-row>
       run edge
       <el-button @click="edgeRun(edgeID)">edge</el-button>
@@ -125,7 +129,7 @@ defineExpose({ nodes });
         />
       </template>
 
-      <!-- <Background /> -->
+      <Background />
 
       <Panel class="process-panel" position="top-right">
         <div class="layout-panel">
@@ -250,7 +254,7 @@ defineExpose({ nodes });
 @import "https://cdn.jsdelivr.net/npm/@vue-flow/controls@latest/dist/style.css";
 @import "https://cdn.jsdelivr.net/npm/@vue-flow/minimap@latest/dist/style.css";
 @import "https://cdn.jsdelivr.net/npm/@vue-flow/node-resizer@latest/dist/style.css";
-
+@import '@vue-flow/core/dist/style.css';
 html,
 body,
 #app {
@@ -270,6 +274,15 @@ body,
 .vue-flow__minimap {
   transform: scale(75%);
   transform-origin: bottom right;
+}
+
+.vue-flow__node-custom {
+  background: purple;
+  color: white;
+  border: 1px solid purple;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px purple;
+  padding: 8px;
 }
 
 </style>
