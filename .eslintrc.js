@@ -20,6 +20,8 @@ module.exports = {
     "no-await-in-loop": "off",
     "vue/case-in-component-tags": "off",
     "no-undef": 0,
+    "quote-props": 0,
+    'vuejs-accessibility/click-events-have-key-events': 'off',
     // "vue/setup-compiler-macros": 0,
     // 'linebreak-style': ["error", "windows"],
   },
