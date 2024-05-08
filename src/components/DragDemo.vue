@@ -14,6 +14,40 @@
             5. The data could be export as an excel file when "Download" button pressed.<br><br>
           </div>
         </el-dialog>
+          <el-dialog :modal-append-to-body="false"
+            :title="'load'" v-model="dialogTableVisible">
+            <el-table v-loading="userDataLoading" style="height:550px"
+              :data="userData.slice((currentpage - 1) * pagesize, currentpage * pagesize)"
+              highlight-current-row >
+              <el-table-column property="id" :label="'ID'" width="64" />
+              <el-table-column property="order_name" :label="'Name'" width="200" />
+              <el-table-column property="status" :label="'Status'" width="120"/>
+              <el-table-column property="type" :label="'Type'" width="150"/>
+              <el-table-column property="name" :label="'Owner'" width="100"/>
+              <el-table-column property="create_time" :label="'Create Time'" width="200"/>
+              <el-table-column width="80">
+                <template v-slot="scope">
+                  <el-button @click="loadAll(scope.row)">
+                    <el-icon>
+                      <document />
+                    </el-icon>
+                    <!-- <i class="el-icon-document"></i> -->
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <template v-slot:footer>
+              <div>
+                <el-pagination class="custom-pagination" style="float:center;"
+                  background layout="prev, pager, next"
+                  :total="total" @current-change="currentChange">
+                </el-pagination>
+              </div>
+              <div style="margin-top: 20px;">
+              </div>
+            </template>
+          </el-dialog>
+
         <el-row style="margin-top: 8%;">
           <VueDraggable
             v-model="AAA"
@@ -77,6 +111,26 @@
             :sort="false"
           >
             <el-col @click="handleClick(DDD[0])" class="box"> DDD </el-col>
+          </VueDraggable>
+          <VueDraggable
+            v-model="EEE"
+            animation="150"
+            ghostClass="ghost"
+            :group="{ name: 'people', pull: 'clone', put: false }"
+            @clone="onClone"
+            :sort="false"
+          >
+            <el-col @click="handleClick(EEE[0])" class="box"> EEE </el-col>
+          </VueDraggable>
+          <VueDraggable
+            v-model="FFF"
+            animation="150"
+            ghostClass="ghost"
+            :group="{ name: 'people', pull: 'clone', put: false }"
+            @clone="onClone"
+            :sort="false"
+          >
+            <el-col @click="handleClick(FFF[0])" class="box"> FFF </el-col>
           </VueDraggable>
         </el-row>
 
@@ -231,8 +285,14 @@
       <div class="sub_gap"></div>
       <div class="sub4">
         <div align='right'>
+          <el-button plain @click="submit()">
+            <el-icon><Upload/></el-icon>
+          </el-button>
+          <el-button plain @click="getUserData()">
+            <el-icon><folder-opened /></el-icon>
+          </el-button>
           <el-button plain @click="exportExcel()" >
-            <el-icon><Download /></el-icon>
+            <el-icon><download /></el-icon>
           </el-button>
           <el-button plain @click="dialogHelpVisible = true" >Help</el-button>
         </div>
@@ -246,22 +306,22 @@
           <el-table :data="userList"
             style="border: solid 1px; border-radius: 10px; margin-top: 2%;"
           >
-            <el-table-column label="Name" prop="name" :width="'95px'"/>
-            <el-table-column label="CMD" prop="cmd" :width="'70px'" />
-            <el-table-column label="Para" prop="para" :width="'180px'">
+            <el-table-column label="Name" prop="Instrument" :width="'95px'"/>
+            <el-table-column label="CMD" prop="Command" :width="'70px'" />
+            <el-table-column label="Para" prop="Parameter" :width="'180px'">
               <template v-slot="scope">
-                <el-input type="textarea" :rows="3" v-model="scope.row['para']"></el-input>
+                <el-input type="textarea" :rows="3" v-model="scope.row['Parameter']"></el-input>
             </template>
             </el-table-column>
-            <el-table-column prop="remotepath" label="RemotePath" :width="'110px'">
+            <el-table-column prop="RemotePath" label="RemotePath" :width="'110px'">
               <template v-slot="scope">
-                <el-input type="textarea" :rows="2" v-model="scope.row['remotepath']">
+                <el-input type="textarea" :rows="2" v-model="scope.row['RemotePath']">
                 </el-input>
               </template>
             </el-table-column>
-            <el-table-column prop="localpath" label="LocalPath" :width="'110px'">
+            <el-table-column prop="LocalPath" label="LocalPath" :width="'110px'">
               <template v-slot="scope">
-                <el-input type="textarea" :rows="2" v-model="scope.row['localpath']"></el-input>
+                <el-input type="textarea" :rows="2" v-model="scope.row['LocalPath']"></el-input>
               </template>
             </el-table-column>
             <el-table-column prop="time" label="Time(s)">
@@ -269,14 +329,14 @@
                 <el-input type="textarea" :rows="1" v-model="scope.row['time']"></el-input>
               </template>
             </el-table-column>
-            <el-table-column prop="parallel" label="Parallel">
+            <el-table-column prop="Parallel" label="Parallel">
               <template v-slot="scope">
-                <el-switch v-model="scope.row['parallel']"></el-switch>
+                <el-switch v-model="scope.row['Parallel']"></el-switch>
               </template>
             </el-table-column>
-            <el-table-column prop="release" label="Release">
+            <el-table-column prop="Release" label="Release">
               <template v-slot="scope">
-                <el-switch v-model="scope.row['release']"></el-switch>
+                <el-switch v-model="scope.row['Release']"></el-switch>
               </template>
             </el-table-column>
             <el-table-column label="Opt" v-slot="{ row, $index }">
@@ -297,17 +357,30 @@
 </template>
 
 <script lang='ts' setup>
+import { ElMessage } from 'element-plus';
 import unchained from '@/assets/img/unchained.png';
 import robot1 from '@/assets/img/robot1.png';
 import cytation1 from '@/assets/img/cytation1.png';
 import 'element-plus/theme-chalk/index.css';
+import axios from 'axios';
 import {
-  getCurrentInstance, onMounted, ref, reactive, watch,
+  getCurrentInstance, onMounted, ref, watch,
 } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import * as XLSX from 'xlsx';
 
+const url = 'http://192.168.1.33:81';
+
 const dialogHelpVisible = ref(false);
+
+const userDataLoading = ref(false);
+const dialogTableVisible = ref(false);
+const userData = ref([
+]);
+const total = ref(0);
+const pagesize = ref(10);
+const currentpage = ref(1);
+const nowRow = ref(0);
 
 const CmdUnchained = [{
   value: 'START',
@@ -331,21 +404,25 @@ const unchainedPara = ref({
   NewDesign: false,
   ParaChanger: '',
 });
+// step['Instrument'], step['Command'], step['Parameter'],
+// step['RemotePath'], step['LocalPath'], step['Time'],\
+// step['Parallel'], step['Release'], step['Status'], pointer
 const AAA = ref([
   {
-    name: 'Unchained',
-    cmd: CmdUnchainedVal,
-    para: '',
+    Instrument: 'Unchained',
+    Command: CmdUnchainedVal,
+    Parameter: '',
     // para: unchainedParaCP,
-    remotepath: '',
-    localpath: '',
-    time: 3600,
-    parallel: false,
-    release: false,
+    RemotePath: '',
+    LocalPath: '',
+    Time: 3600,
+    Parallel: false,
+    Release: false,
+    Status: null,
   },
 ]);
 watch(unchainedPara.value, (newVal) => {
-  AAA.value[0].para = JSON.stringify(newVal);
+  AAA.value[0].Parameter = JSON.stringify(newVal);
 });
 
 const CmdRobot1 = [{
@@ -414,14 +491,15 @@ const Plates = [
 const robot1Para = ref(DestinationVal.value);
 const BBB = ref([
   {
-    name: 'Robot1',
-    cmd: CmdRobot1Val,
-    para: robot1Para,
-    remotepath: '',
-    localpath: '',
-    time: 3600,
-    parallel: false,
-    release: false,
+    Instrument: 'Robot1',
+    Command: CmdRobot1Val,
+    Parameter: robot1Para,
+    RemotePath: '',
+    LocalPath: '',
+    Time: 3600,
+    Parallel: false,
+    Release: false,
+    Status: null,
   },
 ]);
 watch([DestinationVal, ActionVal, PlatesVal], (newVals) => {
@@ -442,22 +520,23 @@ const CmdCytation1Val = ref(CmdCytation1[0].value);
 const cytation1Para = ref({
   RemotePath: '',
 });
-const remotePathCytation1 = ref('');
+// const remotePathCytation1 = ref('');
 const CCC = ref([
   {
-    name: 'Cytation1',
-    cmd: CmdCytation1Val,
-    para: '',
-    remotepath: '',
-    localpath: '',
-    time: 3600,
-    parallel: false,
-    release: false,
+    Instrument: 'Cytation1',
+    Command: CmdCytation1Val,
+    Parameter: '',
+    RemotePath: '',
+    LocalPath: '',
+    Time: 3600,
+    Parallel: false,
+    Release: false,
+    Status: null,
   },
 ]);
 watch(cytation1Para.value, (newVal) => {
   console.log(newVal);
-  CCC.value[0].remotepath = newVal.RemotePath;
+  CCC.value[0].RemotePath = newVal.RemotePath;
 });
 
 const currentInstance = ref();
@@ -474,19 +553,31 @@ const DDD = ref([
     para: paraDDD,
   },
 ]);
+const EEE = ref([
+  {
+    name: 'EEE',
+    para: 5,
+  },
+]);
+const FFF = ref([
+  {
+    name: 'FFF',
+    para: 6,
+  },
+]);
 
-function handleClick(item: { name: string; para: string;}) {
+function handleClick(item: { Instrument: string;}) {
   console.log(item, 'click');
-  if (item.name === 'Unchained') {
+  if (item.Instrument === 'Unchained') {
     activeName.value = 'first';
   }
-  if (item.name === 'Robot1') {
+  if (item.Instrument === 'Robot1') {
     activeName.value = 'second';
   }
-  if (item.name === 'Cytation1') {
+  if (item.Instrument === 'Cytation1') {
     activeName.value = 'third';
   }
-  if (item.name === 'DDD') {
+  if (item.Instrument === 'DDD') {
     activeName.value = 'fourth';
   }
 }
@@ -514,8 +605,24 @@ function exportExcel() {
       'Status']);
     for (let i = 0; i < rowLength; i += 1) {
       const rowData: string[] = [];
+      // sort by key
+      let j = 0;
       Object.keys(table.value[0]).forEach((key) => {
-        rowData.push(table.value[i][key]);
+        console.log('.....', key, table.value[i][key]);
+        switch (key) {
+          case 'Instrument': j = 0; break;
+          case 'Command': j = 1; break;
+          case 'Parameter': j = 2; break;
+          case 'RemotePath': j = 3; break;
+          case 'LocalPath': j = 4; break;
+          case 'Time': j = 5; break;
+          case 'Parallel': j = 6; break;
+          case 'Release': j = 7; break;
+          case 'Status': j = 8; break;
+          default: break;
+        }
+        rowData[j] = String(table.value[i][key]);
+        // rowData.push(table.value[i][key]);
       });
       data.push(rowData);
     }
@@ -525,6 +632,108 @@ function exportExcel() {
     XLSX.writeFile(wb, 'table.xlsx');
   }
 }
+
+function getUserData() {
+  dialogTableVisible.value = true;
+  userDataLoading.value = true;
+  axios.post(`${url}/main-page/get-projects`, { 'owner': 'abc' }).then((res) => {
+    userData.value = res.data.data;
+    total.value = userData.value.length;
+    userDataLoading.value = false;
+  });
+}
+
+function currentChange(currentPage: number) {
+  currentpage.value = currentPage;
+}
+function handleData(_val: object) {
+  axios.post(`${url}/main-page/get-cc-chart`, { id: _val.id }).then((res) => {
+    userList.value = res.data.data;
+    for (let index = 0; index < res.data.data.length; index += 1) {
+      userList.value[index].Instrument = res.data.data[index].instrument;
+      delete userList.value[index].instrument;
+      userList.value[index].Command = res.data.data[index].command;
+      delete userList.value[index].command;
+      userList.value[index].Parameter = res.data.data[index].parameter;
+      delete userList.value[index].parameter;
+      userList.value[index].RemotePath = res.data.data[index].remote_path;
+      delete userList.value[index].remote_path;
+      userList.value[index].LocalPath = res.data.data[index].local_path;
+      delete userList.value[index].local_path;
+      userList.value[index].Time = res.data.data[index].time_allowed;
+      delete userList.value[index].time_allowed;
+      userList.value[index].Parallel = !!res.data.data[index].parallel;
+      delete userList.value[index].parallel;
+      userList.value[index].Release = !!res.data.data[index].release;
+      delete userList.value[index].release;
+      userList.value[index].Status = res.data.data[index].status;
+      delete userList.value[index].status;
+      delete userList.value[index].pointer;
+      delete userList.value[index].locked;
+      delete userList.value[index].id;
+      delete userList.value[index].project_id;
+      delete userList.value[index].local_id;
+    }
+  });
+}
+
+function loadAll(_val: number) {
+  nowRow.value = _val;
+  if (nowRow.value == null) {
+    // $message({
+    //   message: "No Item Selected",
+    //   type: "warning",
+    // });
+  } else {
+    handleData(nowRow.value);
+    // this.currentID = nowRow.value.id;
+    dialogTableVisible.value = false;
+  }
+}
+
+function getTime() {
+  const now = new Date();
+  const y = `${now.getFullYear()}`;
+  const d = `${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+  const s = `${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}-${now.getSeconds().toString().padStart(2, '0')}`;
+  const formattedTime = `${y}-${d}-${s}`;
+  console.log(formattedTime);
+  return formattedTime;
+}
+
+function submit() {
+  if (userList.value.length === 0) {
+    return;
+  }
+  const current = `${getTime()}`;
+  const sendData = {
+    'data': userList.value,
+    'name': current,
+    'type': 'General',
+    'owner': 'abc',
+    'parent_id': 0,
+    'input': '',
+    // 'owner': 'admin',
+  };
+  console.log('/////////', sendData);
+  axios
+    .post(`${url}/main-page/submit-project`, sendData)
+    .then((res) => {
+      if (res.status === 200) {
+        ElMessage({
+          message: 'Submit successful',
+          type: 'success',
+        });
+        console.log('....', res.data.last_id);
+      } else {
+        ElMessage({
+          message: 'Submit failed',
+          type: 'error',
+        });
+      }
+    });
+}
+
 function setPointer() {
   document.body.style.cursor = 'move';
 }
@@ -586,9 +795,10 @@ onMounted(() => {
   border: 1px solid;
   width: 80px;
   height: 90px;
-  margin: 1%;
+  margin-left: 1%;
   border-radius: 8px;
-  margin: 5px;
+  margin-right: 15px;
+  margin-bottom: 10px;
 }
 .el-img{
   transform: scale(0.8);
