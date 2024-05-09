@@ -1,6 +1,19 @@
 <template>
-  <div>
-    <div class="content">
+  <div align="center">
+    <div align='right' style="margin-right: 12.5%; margin-top: 1%;">
+      <el-button plain @click="submit()">
+        <el-icon><Upload/></el-icon>
+      </el-button>
+      <el-button plain @click="getUserData()">
+        <el-icon><folder-opened /></el-icon>
+      </el-button>
+      <el-button plain @click="exportExcel()" >
+        <el-icon><download /></el-icon>
+      </el-button>
+      <el-button plain @click="dialogHelpVisible = true" >Help</el-button>
+    </div>
+    <div class="content"
+      style="border-radius: 20px; height: 88vh; width: 80%; margin-top: 2vh;">
       <div class="sub1"></div>
       <div class="sub3">
         <el-dialog custom-class="help-dialog" :top="'80px'" :title="'Help'" align="left"
@@ -11,7 +24,10 @@
             3. The table will be displayed at right side.<br><br>
             4. Sequence of the progress you build could be dragged at your will in the table.<br>
             <br>
-            5. The data could be export as an excel file when "Download" button pressed.<br><br>
+            5. The data could be download as an excel file when "Download" button pressed.<br><br>
+            6. The data could be imported from database when "Import" button pressed.<br><br>
+            7. The data could be uploaded when "Upload" button pressed.<br><br>
+            8. Parameter of each instrument displayed is default.<br><br>
           </div>
         </el-dialog>
           <el-dialog :modal-append-to-body="false"
@@ -48,7 +64,7 @@
             </template>
           </el-dialog>
 
-        <el-row style="margin-top: 8%;">
+        <el-row style="margin-top: 10%;">
           <VueDraggable
             v-model="AAA"
             animation="150"
@@ -62,7 +78,9 @@
             @focus="handleFocus"
             @mouseleave="unsetPointer"
             @blur="handleBlur"
-            > Unchained
+            style="position: relative;"
+            >
+            <div class="title">Unchained</div>
             <el-image :src='unchained' class="el-img"></el-image>
           </el-col>
           </VueDraggable>
@@ -79,7 +97,8 @@
             @focus="handleFocus"
             @mouseleave="unsetPointer"
             @blur="handleBlur"
-            > Robot1
+            >
+            <div class="title">Robot1</div>
             <el-image :src='robot1' class="el-img"
               style="translate: 0px -15px;transform: scale(0.65) scaleY(0.9);"></el-image>
           </el-col>
@@ -97,7 +116,8 @@
             @focus="handleFocus"
             @mouseleave="unsetPointer"
             @blur="handleBlur"
-            > Cytation1
+            >
+            <div class="title">Cytation1</div>
               <el-image :src='cytation1' class="el-img"
               style="translate: 0px -5px;transform: scale(0.65) scaleY(0.9);"></el-image>
             </el-col>
@@ -110,7 +130,9 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(DDD[0])" class="box"> DDD </el-col>
+            <el-col @click="handleClick(DDD[0])" class="box">
+              <div class="title">DDD</div>
+            </el-col>
           </VueDraggable>
           <VueDraggable
             v-model="EEE"
@@ -120,7 +142,9 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(EEE[0])" class="box"> EEE </el-col>
+            <el-col @click="handleClick(EEE[0])" class="box">
+              <div class="title">EEE</div>
+            </el-col>
           </VueDraggable>
           <VueDraggable
             v-model="FFF"
@@ -130,24 +154,20 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(FFF[0])" class="box"> FFF </el-col>
+            <el-col @click="handleClick(FFF[0])" class="box">
+              <div class="title">FFF</div>
+            </el-col>
           </VueDraggable>
         </el-row>
 
         <el-tabs
           v-model="activeName"
           ref="tabs"
-          class="hide-tabs-header"
-          style="
-            margin-top: 10%;
-            height: 50vh;
-            border: 1px solid;
-            border-radius: 10px;
-          "
+          class="hide-tabs-header para-box"
         >
           <el-tab-pane label="1" name="first" align="center">
             <el-form ref="cmd-unchaied" :label-position="'right'"
-              style="width: 70%; margin-top: 3%;">
+              style="width: 70%; margin-top: 8%;">
               <el-form-item label="CMD">
                 <el-select v-model="CmdUnchainedVal" placeholder="Choose">
                   <el-option v-for="item in CmdUnchained" :key="item.value" :label="item.label"
@@ -213,7 +233,8 @@
           </el-tab-pane>
 
           <el-tab-pane label="2" name="second" align="center">
-            <el-form ref="cmd-robot1" :label-position="'right'" style="width: 70%; margin-top: 3%;">
+            <el-form ref="cmd-robot1" :label-position="'right'"
+              style="width: 70%; margin-top: 8%;">
               <el-form-item label="CMD">
                 <el-select v-model="CmdRobot1Val" placeholder="Choose">
                   <el-option v-for="item in CmdRobot1" :key="item.value" :label="item.label"
@@ -250,7 +271,7 @@
 
           <el-tab-pane label="3" name="third" align="center">
             <el-form ref="cmd-cytation1" :label-position="'right'"
-              style="width: 70%; margin-top: 3%;">
+              style="width: 70%; margin-top: 8%;">
               <el-form-item label="CMD">
                 <el-select v-model="CmdCytation1Val" placeholder="Choose">
                   <el-option v-for="item in CmdCytation1" :key="item.value" :label="item.label"
@@ -284,7 +305,7 @@
       </div>
       <div class="sub_gap"></div>
       <div class="sub4">
-        <div align='right'>
+        <!-- <div align='right'>
           <el-button plain @click="submit()">
             <el-icon><Upload/></el-icon>
           </el-button>
@@ -295,7 +316,7 @@
             <el-icon><download /></el-icon>
           </el-button>
           <el-button plain @click="dialogHelpVisible = true" >Help</el-button>
-        </div>
+        </div> -->
         <VueDraggable
           target="tbody"
           v-model="userList"
@@ -303,8 +324,9 @@
           group="people"
           ghostClass="ghost"
         >
-          <el-table :data="userList"
-            style="border: solid 1px; border-radius: 10px; margin-top: 2%;"
+          <el-table :data="userList" class="data-box"
+            style="
+            "
           >
             <el-table-column label="Name" prop="Instrument" :width="'95px'"/>
             <el-table-column label="CMD" prop="Command" :width="'70px'" />
@@ -392,27 +414,24 @@ const CmdUnchained = [{
 }];
 const CmdUnchainedVal = ref(CmdUnchained[1].value);
 const unchainedPara = ref({
-  ProjectName: '',
-  ChooseDesignID: '',
+  ProjectName: '202303011625',
+  ChooseDesignID: '558',
   LsrFilePath: '',
   UseLsrFile: false,
   LastLibraryID: '',
-  SetPrompts: '',
-  SetChemicalManager: '',
+  SetPrompts: 'D://Optimization_ryx//prepare_prompts_1.xml',
+  SetChemicalManager: 'D://Optimization_ryx//prepare_manager_1.xml',
   SetTipManagement: '',
   UseAI: false,
   NewDesign: false,
-  ParaChanger: '',
+  ParaChanger: [],
 });
-// step['Instrument'], step['Command'], step['Parameter'],
-// step['RemotePath'], step['LocalPath'], step['Time'],\
-// step['Parallel'], step['Release'], step['Status'], pointer
+
 const AAA = ref([
   {
     Instrument: 'Unchained',
     Command: CmdUnchainedVal,
-    Parameter: '',
-    // para: unchainedParaCP,
+    Parameter: JSON.stringify(unchainedPara.value),
     RemotePath: '',
     LocalPath: '',
     Time: 3600,
@@ -520,7 +539,6 @@ const CmdCytation1Val = ref(CmdCytation1[0].value);
 const cytation1Para = ref({
   RemotePath: '',
 });
-// const remotePathCytation1 = ref('');
 const CCC = ref([
   {
     Instrument: 'Cytation1',
@@ -680,13 +698,9 @@ function handleData(_val: object) {
 function loadAll(_val: number) {
   nowRow.value = _val;
   if (nowRow.value == null) {
-    // $message({
-    //   message: "No Item Selected",
-    //   type: "warning",
-    // });
+    dialogTableVisible.value = false;
   } else {
     handleData(nowRow.value);
-    // this.currentID = nowRow.value.id;
     dialogTableVisible.value = false;
   }
 }
@@ -765,16 +779,17 @@ onMounted(() => {
 
 .content {
   display: flex;
-  margin-top: 5%;
+  margin-top: 2%;
+  box-shadow: 5px 5px 20px #888888;
 }
 
 .content .sub1 {
-  width: 10%;
+  width: 3%;
 }
 
-.content .sub2 {
+/* .content .sub2 {
   width: 80%;
-}
+} */
 
 .content .sub3 {
   width: 30%;
@@ -784,7 +799,7 @@ onMounted(() => {
 }
 
 .content .sub4 {
-  width: 47%;
+  width: 61%;
 }
 
 .hide-tabs-header .el-tabs__header {
@@ -792,15 +807,45 @@ onMounted(() => {
 }
 
 .box {
-  border: 1px solid;
+  /* border: 1px solid; */
   width: 80px;
   height: 90px;
   margin-left: 1%;
+  border: solid 1px #ccc;
   border-radius: 8px;
   margin-right: 15px;
   margin-bottom: 10px;
+  margin-top: 5px;
+  box-shadow: 2px 2px 8px #888888;
+}
+
+.para-box{
+  margin-top: 10%;
+  height: 50vh;
+  /* border: 1px solid; */
+  border: solid 1px #ccc;
+  border-radius: 10px;
+  box-shadow: 1px 1px 6px #888888;
+}
+
+.data-box{
+  border: solid 1px #ccc; border-radius: 10px; margin-top: 5%;
+  height: 78vh;
+  box-shadow: 1px 1px 6px #888888;
+}
+
+.box .title{
+  font-size: 14px; font-weight: 600;
+}
+
+.el-button{
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px #888888;
 }
 .el-img{
   transform: scale(0.8);
+}
+.el-dialog {
+  border-radius: 10px;
 }
 </style>
