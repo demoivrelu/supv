@@ -130,8 +130,15 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(DDD[0])" class="box">
-              <div class="title">DDD</div>
+            <el-col @click="handleClick(DDD[0])" class="box"
+            @mouseenter="setPointer"
+            @focus="handleFocus"
+            @mouseleave="unsetPointer"
+            @blur="handleBlur"
+            >
+              <div class="title">Thermo</div>
+              <el-image :src='thermo' class="el-img"
+                style="translate: 0px -20px;transform: scale(0.65) scaleY(0.9);"></el-image>
             </el-col>
           </VueDraggable>
           <VueDraggable
@@ -142,8 +149,15 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(EEE[0])" class="box">
-              <div class="title">EEE</div>
+            <el-col @click="handleClick(EEE[0])" class="box"
+            @mouseenter="setPointer"
+            @focus="handleFocus"
+            @mouseleave="unsetPointer"
+            @blur="handleBlur"
+            >
+              <div class="title">Hamilton</div>
+              <el-image :src='hamilton' class="el-img"
+                style="translate: 0px 15px;transform: scale(0.94);"></el-image>
             </el-col>
           </VueDraggable>
           <VueDraggable
@@ -154,8 +168,34 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(FFF[0])" class="box">
-              <div class="title">FFF</div>
+            <el-col @click="handleClick(FFF[0])" class="box"
+            @mouseenter="setPointer"
+            @focus="handleFocus"
+            @mouseleave="unsetPointer"
+            @blur="handleBlur"
+            >
+              <div class="title">Discover</div>
+              <el-image :src='discover' class="el-img"
+                style="translate: 0px -5px;transform: scale(0.94);"></el-image>
+            </el-col>
+          </VueDraggable>
+          <VueDraggable
+            v-model="GGG"
+            animation="150"
+            ghostClass="ghost"
+            :group="{ name: 'people', pull: 'clone', put: false }"
+            @clone="onClone"
+            :sort="false"
+          >
+            <el-col @click="handleClick(GGG[0])" class="box"
+            @mouseenter="setPointer"
+            @focus="handleFocus"
+            @mouseleave="unsetPointer"
+            @blur="handleBlur"
+            >
+              <div class="title">GC</div>
+              <el-image :src='gc' class="el-img"
+                style="translate: 0px -5px;transform: scale(0.9) scaleX(1.15);"></el-image>
             </el-col>
           </VueDraggable>
         </el-row>
@@ -286,21 +326,164 @@
                 <el-input v-model="cytation1Para.RemotePath"></el-input>
               </el-form-item>
             </el-form>
-            <!-- <el-row v-if="CmdCytation1Val == 'INIT'">
-              <div class="grid-content detail-top">
-                <el-col :span="8">
-                  <h3 class="detail-method">
-                    RemotePath :
-                  </h3>
-                </el-col>
-                <el-col :span="14">
-                  <el-input class="input-common" v-model.trim="cytation1Para['RemotePath']">
-                  </el-input>
-                </el-col>
-            </div>
-            </el-row> -->
           </el-tab-pane>
-          <el-tab-pane label="4" name="fourth">{{ paraDDD }}</el-tab-pane>
+
+          <el-tab-pane label="4" name="fourth">
+            <el-form ref="cmd-thermo" :label-position="'right'"
+              style="width: 70%; margin-top: 8%;">
+              <el-form-item label="CMD">
+                <el-select v-model="CmdThermoVal" placeholder="Choose">
+                  <el-option v-for="item in CmdThermo" :key="item.value" :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <el-form v-if="CmdThermoVal == 'INIT'" ref="form-thermo" :label-position="'right'"
+              style="width: 70%; margin-top: 3%;">
+              <el-form-item label="ProcessingMethod">
+                <el-input v-model="thermoPara.ProcessingMethod"></el-input>
+              </el-form-item>
+              <el-form-item label="InstrumentMethod">
+                <el-input v-model="thermoPara.InstrumentMethod"></el-input>
+              </el-form-item>
+              <el-form-item label="Injection" >
+                <el-input v-model="thermoPara.Injection[0][0]" style="width: 30%"/>
+                <el-input v-model="thermoPara.Injection[0][1]" style="margin-left:12px;width: 30%"/>
+                <el-input v-model="thermoPara.Injection[0][2]" style="margin-left:12px;width: 30%"/>
+              </el-form-item>
+              <el-form-item label="SequenceName">
+                <el-input v-model="thermoPara.SequenceName"></el-input>
+              </el-form-item>
+              <el-form-item label="TemplateName">
+                <el-input v-model="thermoPara.TemplateName"></el-input>
+              </el-form-item>
+              <el-form-item label="ProjectName">
+                <el-input v-model="thermoPara.ProjectName"></el-input>
+              </el-form-item>
+              <el-form-item label="Channels">
+                <el-input v-model="thermoPara.Channels[0]"></el-input>
+              </el-form-item>
+              <el-form-item label="New">
+                <el-switch v-model="thermoPara.New"></el-switch>
+              </el-form-item>
+            </el-form>
+          </el-tab-pane>
+
+          <el-tab-pane label="5" name="fifth">
+            <el-form ref="cmd-hamilton" :label-position="'right'"
+              style="width: 70%; margin-top: 8%;">
+              <el-form-item label="CMD">
+                <el-select v-model="CmdHamiltonVal" placeholder="Choose">
+                  <el-option v-for="item in CmdHamilton" :key="item.value" :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <el-form v-if="CmdHamiltonVal == 'INIT'" ref="form-hamilton" :label-position="'right'"
+              style="width: 70%; margin-top: 3%;">
+              <el-form-item label="RemotePath">
+                <el-input v-model="hamiltonPara.RemotePath"></el-input>
+              </el-form-item>
+            </el-form>
+          </el-tab-pane>
+
+          <el-tab-pane label="6" name="sixth">
+            <el-form ref="cmd-discover" :label-position="'right'"
+              style="width: 70%; margin-top: 8%;">
+              <el-form-item label="CMD">
+                <el-select v-model="CmdDiscoverVal" placeholder="Choose">
+                  <el-option v-for="item in CmdDiscover" :key="item.value" :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <el-form v-if="CmdDiscoverVal == 'INIT'" ref="form-discover" :label-position="'right'"
+              style="width: 70%; margin-bottom: 2%;">
+              <el-form-item label="Method" style="margin-bottom: 2%;">
+                <el-input v-model="discoverPara.Method"></el-input>
+              </el-form-item>
+              <el-form-item label="Power" style="margin-bottom: 2%;">
+                <el-input-number v-model="discoverPara.Power"/>
+              </el-form-item>
+              <el-form-item label="Temperature" style="margin-bottom: 2%;">
+                <el-input-number v-model="discoverPara.Temperature"/>
+              </el-form-item>
+              <el-form-item label="Time" style="margin-bottom: 2%;">
+                <el-input-number v-model="discoverPara.Time"/>
+              </el-form-item>
+              <el-form-item label="Pressure" style="margin-bottom: 2%;">
+                <el-input-number v-model="discoverPara.Pressure"/>
+              </el-form-item>
+              <el-form-item label="Power Interval" style="margin-bottom: 2%;">
+                <el-input-number v-model="discoverPara.Power_Interval"/>
+              </el-form-item>
+              <el-form-item label="Cooling Interval" style="margin-bottom: 2%;">
+                <el-input-number v-model="discoverPara.Cooling_Interval"/>
+              </el-form-item>
+              <el-form-item label="Maximum Temperature" style="margin-bottom: 2%;">
+                <el-input-number v-model="discoverPara.Maximum_Temperature"/>
+              </el-form-item>
+              <el-form-item label="Minimum Temperature" style="margin-bottom: 2%;">
+                <el-input-number v-model="discoverPara.Minimum_Temperature"/>
+              </el-form-item>
+              <el-form-item label="Number of Cycles" style="margin-bottom: 2%;">
+                <el-input-number v-model="discoverPara.Number_of_Cycles"/>
+              </el-form-item>
+            </el-form>
+          </el-tab-pane>
+
+          <el-tab-pane label="7" name="seventh">
+            <el-form ref="cmd-gc" :label-position="'right'"
+              style="width: 70%; margin-top: 8%;">
+              <el-form-item label="CMD">
+                <el-select v-model="CmdGCVal" placeholder="Choose">
+                  <el-option v-for="item in CmdGC" :key="item.value" :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <el-form v-if="CmdGCVal == 'INIT'" ref="form-gc" :label-position="'right'"
+              style="width: 70%; margin-top: 3%;">
+              <!-- <el-form-item label="Type" style="margin-bottom: 2%;">
+                <el-input v-model="gcPara.Type"></el-input>
+              </el-form-item> -->
+              <el-form-item label="ProjectId" style="margin-bottom: 2%;">
+                <el-input v-model="gcPara.ProjectId"></el-input>
+              </el-form-item>
+              <el-form-item label="AcquisitionMethodPath" style="margin-bottom: 2%;">
+                <el-input v-model="gcPara.SequenceInjections[0].AcquisitionMethodPath"></el-input>
+              </el-form-item>
+              <el-form-item label="SampleLocation" style="margin-bottom: 2%;">
+                <el-input v-model="gcPara.SequenceInjections[0].SampleLocation"></el-input>
+              </el-form-item>
+              <el-form-item label="InjectionVolume" style="margin-bottom: 2%;">
+                <el-input v-model="gcPara.SequenceInjections[0].InjectionVolume"></el-input>
+              </el-form-item>
+              <el-form-item label="SampleType" style="margin-bottom: 2%;">
+                <el-input v-model="gcPara.SequenceInjections[0].SampleType"></el-input>
+              </el-form-item>
+              <el-form-item label="SampleName" style="margin-bottom: 2%;">
+                <el-input v-model="gcPara.SequenceInjections[0].SampleName"></el-input>
+              </el-form-item>
+              <el-form-item label="SampleAmount" style="margin-bottom: 2%;">
+                <el-input v-model="gcPara.SequenceInjections[0].SampleAmount"></el-input>
+              </el-form-item>
+              <el-form-item label="SampleDescription" style="margin-bottom: 2%;">
+                <el-input v-model="gcPara.SequenceInjections[0].SampleDescription"></el-input>
+              </el-form-item>
+              <el-form-item label="DataFilename" style="margin-bottom: 2%;">
+                <el-input v-model="gcPara.SequenceInjections[0].DataFilename"></el-input>
+              </el-form-item>
+              <el-form-item label="SelectedInjection">
+                <el-input v-model="gcPara.SequenceInjections[0].SelectedInjection"></el-input>
+              </el-form-item>
+            </el-form>
+
+          </el-tab-pane>
         </el-tabs>
       </div>
       <div class="sub_gap"></div>
@@ -324,10 +507,7 @@
           group="people"
           ghostClass="ghost"
         >
-          <el-table :data="userList" class="data-box"
-            style="
-            "
-          >
+          <el-table :data="userList" class="data-box">
             <el-table-column label="Name" prop="Instrument" :width="'95px'"/>
             <el-table-column label="CMD" prop="Command" :width="'70px'" />
             <el-table-column label="Para" prop="Parameter" :width="'180px'">
@@ -346,9 +526,9 @@
                 <el-input type="textarea" :rows="2" v-model="scope.row['LocalPath']"></el-input>
               </template>
             </el-table-column>
-            <el-table-column prop="time" label="Time(s)">
+            <el-table-column prop="Time" label="Time(s)">
               <template v-slot="scope">
-                <el-input type="textarea" :rows="1" v-model="scope.row['time']"></el-input>
+                <el-input type="textarea" :rows="1" v-model="scope.row['Time']"></el-input>
               </template>
             </el-table-column>
             <el-table-column prop="Parallel" label="Parallel">
@@ -383,6 +563,10 @@ import { ElMessage } from 'element-plus';
 import unchained from '@/assets/img/unchained.png';
 import robot1 from '@/assets/img/robot1.png';
 import cytation1 from '@/assets/img/cytation1.png';
+import thermo from '@/assets/img/thermo.png';
+import hamilton from '@/assets/img/hamilton.png';
+import discover from '@/assets/img/discover.png';
+import gc from '@/assets/img/gc.png';
 import 'element-plus/theme-chalk/index.css';
 import axios from 'axios';
 import {
@@ -557,6 +741,188 @@ watch(cytation1Para.value, (newVal) => {
   CCC.value[0].RemotePath = newVal.RemotePath;
 });
 
+const CmdThermo = [
+  {
+    value: 'INIT',
+    label: 'INIT',
+  },
+  {
+    value: 'START',
+    label: 'START',
+  },
+  {
+    value: 'SAMPLELOAD',
+    label: 'SAMPLELOAD',
+  },
+  {
+    value: 'SAMPLEUNLOAD',
+    label: 'SAMPLEUNLOAD',
+  }];
+const CmdThermoVal = ref(CmdThermo[0].value);
+const thermoPara = ref({
+  ProcessingMethod: 'Data/sequence/RYX/RYX-2023-2-16-test',
+  InstrumentMethod: 'Data/sequence/RYX/RYX-2023-2-16-test',
+  Injection: [
+    [
+      'diol-ox',
+      '0.25',
+      'R:A1',
+    ],
+  ],
+  SequenceName: 'Data/sequence/RYX/RYX-diol-oxidation',
+  Instrument: 'ISQ-EC',
+  TemplateName: 'Data/sequence/RYX/RYX-report-test-1',
+  User: '',
+  ProjectName: 'diol_oxidation',
+  Channels: [
+    'UV_VIS_1',
+  ],
+  New: false,
+});
+const DDD = ref([
+  {
+    Instrument: 'Thermo',
+    Command: CmdThermoVal,
+    Parameter: JSON.stringify(thermoPara.value),
+    RemotePath: '',
+    LocalPath: '',
+    Time: 3600,
+    Parallel: false,
+    Release: false,
+    Status: null,
+  },
+]);
+watch(thermoPara.value, (newVal) => {
+  DDD.value[0].Parameter = JSON.stringify(newVal);
+});
+
+const CmdHamilton = [
+  {
+    value: 'INIT',
+    label: 'INIT',
+  },
+  {
+    value: 'START',
+    label: 'START',
+  }];
+const CmdHamiltonVal = ref(CmdCytation1[0].value);
+const hamiltonPara = ref({
+  RemotePath: '',
+});
+const EEE = ref([
+  {
+    Instrument: 'Hamilton',
+    Command: CmdHamiltonVal,
+    Parameter: '',
+    RemotePath: '',
+    LocalPath: '',
+    Time: 3600,
+    Parallel: false,
+    Release: false,
+    Status: null,
+  },
+]);
+watch(hamiltonPara.value, (newVal) => {
+  console.log(newVal);
+  EEE.value[0].RemotePath = newVal.RemotePath;
+});
+
+const CmdDiscover = [
+  {
+    value: 'INIT',
+    label: 'INIT',
+  },
+  {
+    value: 'START',
+    label: 'START',
+  },
+  {
+    value: 'SAMPLELOAD',
+    label: 'SAMPLELOAD',
+  },
+  {
+    value: 'SAMPLEUNLOAD',
+    label: 'SAMPLEUNLOAD',
+  }];
+const CmdDiscoverVal = ref(CmdCytation1[0].value);
+const discoverPara = ref({
+  Method: 'Dynamic',
+  Power: 30,
+  Temperature: 60,
+  Time: 900,
+  Pressure: 100,
+  Stirring: 500,
+  Power_Interval: 40,
+  Cooling_Interval: 20,
+  Maximum_Temperature: 60,
+  Minimum_Temperature: 55,
+  Number_of_Cycles: 2,
+});
+const FFF = ref([
+  {
+    Instrument: 'Discover',
+    Command: CmdDiscoverVal,
+    Parameter: JSON.stringify(discoverPara.value),
+    RemotePath: '',
+    LocalPath: '',
+    Time: 3600,
+    Parallel: false,
+    Release: false,
+    Status: null,
+  },
+]);
+watch(discoverPara.value, (newVal) => {
+  console.log(newVal);
+  FFF.value[0].Parameter = JSON.stringify(newVal);
+});
+
+const CmdGC = [
+  {
+    value: 'INIT',
+    label: 'INIT',
+  },
+  {
+    value: 'START',
+    label: 'START',
+  }];
+const CmdGCVal = ref(CmdCytation1[0].value);
+const gcPara = ref({
+  UserCode: 'admin',
+  UserPWD: '!QAZ2wsx',
+  Ticket: '',
+  Type: 1,
+  InstrumentId: '16',
+  ProjectId: '15',
+  SequenceInjections: [{
+    AcquisitionMethodPath: '/DEMO/Methods/AcqMethod_2min.amx',
+    SampleLocation: '2',
+    InjectionVolume: 1,
+    SampleType: 0,
+    SampleName: 'sample 2',
+    SampleAmount: 1,
+    SampleDescription: 'descri 2',
+    DataFilename: 'datafilename2',
+    SelectedInjection: 'Als',
+  },
+  ],
+});
+const GGG = ref([
+  {
+    Instrument: 'GC',
+    Command: CmdGCVal,
+    Parameter: JSON.stringify(gcPara.value),
+    RemotePath: '',
+    LocalPath: '',
+    Time: 3600,
+    Parallel: false,
+    Release: false,
+    Status: null,
+  },
+]);
+watch(gcPara.value, (newVal) => {
+  console.log(newVal);
+  GGG.value[0].Parameter = JSON.stringify(newVal);
+});
 const currentInstance = ref();
 const activeName = ref('second');
 // const paraAAA = '1';
@@ -564,25 +930,6 @@ const activeName = ref('second');
 // const paraCCC = '3';
 const paraDDD = '4';
 const userList = ref([]);
-
-const DDD = ref([
-  {
-    name: 'DDD',
-    para: paraDDD,
-  },
-]);
-const EEE = ref([
-  {
-    name: 'EEE',
-    para: 5,
-  },
-]);
-const FFF = ref([
-  {
-    name: 'FFF',
-    para: 6,
-  },
-]);
 
 function handleClick(item: { Instrument: string;}) {
   console.log(item, 'click');
@@ -595,8 +942,17 @@ function handleClick(item: { Instrument: string;}) {
   if (item.Instrument === 'Cytation1') {
     activeName.value = 'third';
   }
-  if (item.Instrument === 'DDD') {
+  if (item.Instrument === 'Thermo') {
     activeName.value = 'fourth';
+  }
+  if (item.Instrument === 'Hamilton') {
+    activeName.value = 'fifth';
+  }
+  if (item.Instrument === 'Discover') {
+    activeName.value = 'sixth';
+  }
+  if (item.Instrument === 'GC') {
+    activeName.value = 'seventh';
   }
 }
 function deleteItem(row: JSON, index: number) {
@@ -808,20 +1164,25 @@ onMounted(() => {
 
 .box {
   /* border: 1px solid; */
-  width: 80px;
-  height: 90px;
+  width: 84px;
+  height: 100px;
   margin-left: 1%;
   border: solid 1px #ccc;
   border-radius: 8px;
-  margin-right: 15px;
+  margin-right: 25px;
   margin-bottom: 10px;
   margin-top: 5px;
   box-shadow: 2px 2px 8px #888888;
 }
 
+.box:hover{
+  transform: scale(1.06);
+  transition: 0.5s;
+}
+
 .para-box{
-  margin-top: 10%;
-  height: 50vh;
+  margin-top: 4%;
+  height: 51vh;
   /* border: 1px solid; */
   border: solid 1px #ccc;
   border-radius: 10px;
@@ -841,6 +1202,9 @@ onMounted(() => {
 .el-button{
   border-radius: 8px;
   box-shadow: 1px 1px 5px #888888;
+}
+.el-form-item{
+  margin-bottom: 13px;
 }
 .el-img{
   transform: scale(0.8);
