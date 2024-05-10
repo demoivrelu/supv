@@ -47,7 +47,6 @@
                     <el-icon>
                       <document />
                     </el-icon>
-                    <!-- <i class="el-icon-document"></i> -->
                   </el-button>
                 </template>
               </el-table-column>
@@ -482,24 +481,11 @@
                 <el-input v-model="gcPara.SequenceInjections[0].SelectedInjection"></el-input>
               </el-form-item>
             </el-form>
-
           </el-tab-pane>
         </el-tabs>
       </div>
       <div class="sub_gap"></div>
       <div class="sub4">
-        <!-- <div align='right'>
-          <el-button plain @click="submit()">
-            <el-icon><Upload/></el-icon>
-          </el-button>
-          <el-button plain @click="getUserData()">
-            <el-icon><folder-opened /></el-icon>
-          </el-button>
-          <el-button plain @click="exportExcel()" >
-            <el-icon><download /></el-icon>
-          </el-button>
-          <el-button plain @click="dialogHelpVisible = true" >Help</el-button>
-        </div> -->
         <VueDraggable
           target="tbody"
           v-model="userList"
@@ -578,15 +564,17 @@ import * as XLSX from 'xlsx';
 const url = 'http://192.168.1.33:81';
 
 const dialogHelpVisible = ref(false);
-
 const userDataLoading = ref(false);
 const dialogTableVisible = ref(false);
-const userData = ref([
-]);
+const userData = ref([]);
 const total = ref(0);
 const pagesize = ref(10);
 const currentpage = ref(1);
 const nowRow = ref(0);
+
+const currentInstance = ref();
+const activeName = ref('second');
+const userList = ref([]);
 
 const CmdUnchained = [{
   value: 'START',
@@ -610,7 +598,6 @@ const unchainedPara = ref({
   NewDesign: false,
   ParaChanger: [],
 });
-
 const AAA = ref([
   {
     Instrument: 'Unchained',
@@ -706,7 +693,6 @@ const BBB = ref([
   },
 ]);
 watch([DestinationVal, ActionVal, PlatesVal], (newVals) => {
-  console.log(newVals);
   robot1Para.value = newVals[1] === '' ? `${newVals[0]}` : `${newVals[0]}/${newVals[1]}_${newVals[2]}`;
 });
 
@@ -737,7 +723,6 @@ const CCC = ref([
   },
 ]);
 watch(cytation1Para.value, (newVal) => {
-  console.log(newVal);
   CCC.value[0].RemotePath = newVal.RemotePath;
 });
 
@@ -823,7 +808,6 @@ const EEE = ref([
   },
 ]);
 watch(hamiltonPara.value, (newVal) => {
-  console.log(newVal);
   EEE.value[0].RemotePath = newVal.RemotePath;
 });
 
@@ -872,7 +856,6 @@ const FFF = ref([
   },
 ]);
 watch(discoverPara.value, (newVal) => {
-  console.log(newVal);
   FFF.value[0].Parameter = JSON.stringify(newVal);
 });
 
@@ -920,19 +903,10 @@ const GGG = ref([
   },
 ]);
 watch(gcPara.value, (newVal) => {
-  console.log(newVal);
   GGG.value[0].Parameter = JSON.stringify(newVal);
 });
-const currentInstance = ref();
-const activeName = ref('second');
-// const paraAAA = '1';
-// const paraBBB = '2';
-// const paraCCC = '3';
-const paraDDD = '4';
-const userList = ref([]);
 
 function handleClick(item: { Instrument: string;}) {
-  console.log(item, 'click');
   if (item.Instrument === 'Unchained') {
     activeName.value = 'first';
   }
@@ -955,17 +929,19 @@ function handleClick(item: { Instrument: string;}) {
     activeName.value = 'seventh';
   }
 }
+
 function deleteItem(row: JSON, index: number) {
   userList.value.splice(index, 1);
 }
+
 function onClone() {
-  console.log('clone');
+  currentInstance.value = getCurrentInstance();
 }
+
 function exportExcel() {
   const table = userList;
   if (table.value.length !== 0) {
     const rowLength = table.value.length;
-    console.log(Object.keys(table.value[0]));
     const data = [];
     data.push([
       'Instrument',
@@ -982,7 +958,6 @@ function exportExcel() {
       // sort by key
       let j = 0;
       Object.keys(table.value[0]).forEach((key) => {
-        console.log('.....', key, table.value[i][key]);
         switch (key) {
           case 'Instrument': j = 0; break;
           case 'Command': j = 1; break;
@@ -1020,6 +995,7 @@ function getUserData() {
 function currentChange(currentPage: number) {
   currentpage.value = currentPage;
 }
+
 function handleData(_val: object) {
   axios.post(`${url}/main-page/get-cc-chart`, { id: _val.id }).then((res) => {
     userList.value = res.data.data;
@@ -1067,7 +1043,6 @@ function getTime() {
   const d = `${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
   const s = `${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}-${now.getSeconds().toString().padStart(2, '0')}`;
   const formattedTime = `${y}-${d}-${s}`;
-  console.log(formattedTime);
   return formattedTime;
 }
 
@@ -1083,9 +1058,7 @@ function submit() {
     'owner': 'abc',
     'parent_id': 0,
     'input': '',
-    // 'owner': 'admin',
   };
-  console.log('/////////', sendData);
   axios
     .post(`${url}/main-page/submit-project`, sendData)
     .then((res) => {
@@ -1094,7 +1067,6 @@ function submit() {
           message: 'Submit successful',
           type: 'success',
         });
-        console.log('....', res.data.last_id);
       } else {
         ElMessage({
           message: 'Submit failed',
@@ -1107,18 +1079,21 @@ function submit() {
 function setPointer() {
   document.body.style.cursor = 'move';
 }
+
 function handleFocus() {
-  console.log('focus');
+  currentInstance.value = getCurrentInstance();
 }
+
 function unsetPointer() {
   document.body.style.cursor = 'default';
 }
+
 function handleBlur() {
-  console.log('blur');
+  currentInstance.value = getCurrentInstance();
 }
+
 onMounted(() => {
   currentInstance.value = getCurrentInstance();
-  console.log(currentInstance.value.refs.tabs, 'instance');
 });
 </script>
 
