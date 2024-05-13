@@ -322,7 +322,10 @@
             <el-form v-if="CmdCytation1Val == 'INIT'" ref="form-cytation1" :label-position="'right'"
               style="width: 70%; margin-top: 3%;">
               <el-form-item label="RemotePath">
-                <el-input v-model="cytation1Para.RemotePath"></el-input>
+                <el-input v-model="cytation1Para.RemotePath" style="width: 90%"/>&nbsp;
+                <el-icon v-bind:title="'Experimental file path in Cytation1 IPC'">
+                  <warning />
+                </el-icon>
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -383,104 +386,121 @@
             <el-form v-if="CmdHamiltonVal == 'INIT'" ref="form-hamilton" :label-position="'right'"
               style="width: 70%; margin-top: 3%;">
               <el-form-item label="RemotePath">
-                <el-input v-model="hamiltonPara.RemotePath"></el-input>
+                <el-input v-model="hamiltonPara.RemotePath" style="width: 90%"/>&nbsp;
+                <el-icon v-bind:title="'Experimental file path in Hamilton IPC'">
+                  <warning />
+                </el-icon>
               </el-form-item>
             </el-form>
           </el-tab-pane>
 
           <el-tab-pane label="6" name="sixth">
-            <el-form ref="cmd-discover" :label-position="'right'"
-              style="width: 70%; margin-top: 8%;">
-              <el-form-item label="CMD">
-                <el-select v-model="CmdDiscoverVal" placeholder="Choose">
-                  <el-option v-for="item in CmdDiscover" :key="item.value" :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-form>
-            <el-form v-if="CmdDiscoverVal == 'INIT'" ref="form-discover" :label-position="'right'"
-              style="width: 70%; margin-bottom: 2%;">
-              <el-form-item label="Method" style="margin-bottom: 2%;">
-                <el-input v-model="discoverPara.Method"></el-input>
-              </el-form-item>
-              <el-form-item label="Power" style="margin-bottom: 2%;">
-                <el-input-number v-model="discoverPara.Power"/>
-              </el-form-item>
-              <el-form-item label="Temperature" style="margin-bottom: 2%;">
-                <el-input-number v-model="discoverPara.Temperature"/>
-              </el-form-item>
-              <el-form-item label="Time" style="margin-bottom: 2%;">
-                <el-input-number v-model="discoverPara.Time"/>
-              </el-form-item>
-              <el-form-item label="Pressure" style="margin-bottom: 2%;">
-                <el-input-number v-model="discoverPara.Pressure"/>
-              </el-form-item>
-              <el-form-item label="Power Interval" style="margin-bottom: 2%;">
-                <el-input-number v-model="discoverPara.Power_Interval"/>
-              </el-form-item>
-              <el-form-item label="Cooling Interval" style="margin-bottom: 2%;">
-                <el-input-number v-model="discoverPara.Cooling_Interval"/>
-              </el-form-item>
-              <el-form-item label="Maximum Temperature" style="margin-bottom: 2%;">
-                <el-input-number v-model="discoverPara.Maximum_Temperature"/>
-              </el-form-item>
-              <el-form-item label="Minimum Temperature" style="margin-bottom: 2%;">
-                <el-input-number v-model="discoverPara.Minimum_Temperature"/>
-              </el-form-item>
-              <el-form-item label="Number of Cycles" style="margin-bottom: 2%;">
-                <el-input-number v-model="discoverPara.Number_of_Cycles"/>
-              </el-form-item>
-            </el-form>
+            <el-scrollbar height="48vh">
+              <el-form ref="cmd-discover" :label-position="'right'"
+                style="width: 70%; margin-top: 8%;">
+                <el-form-item label="CMD">
+                  <el-select v-model="CmdDiscoverVal" placeholder="Choose">
+                    <el-option v-for="item in CmdDiscover" :key="item.value" :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-form>
+              <el-form v-if="CmdDiscoverVal == 'INIT'" ref="form-discover" :label-position="'right'"
+                style="width: 70%;">
+                <el-form-item label="Method">
+                  <el-input v-model="discoverPara.Method"></el-input>
+                </el-form-item>
+                <el-form-item label="Power">
+                  <el-input-number v-model="discoverPara.Power" max="300" min="0"/>&nbsp;
+                  <el-icon v-bind:title="'max : 300'"><warning/></el-icon>
+                </el-form-item>
+                <el-form-item label="Temperature">
+                  <el-input-number v-model="discoverPara.Temperature" max="300" min="0"/>&nbsp;
+                  <el-icon v-bind:title="'max : 300'"><warning/></el-icon>
+                </el-form-item>
+                <el-form-item label="Time">
+                  <el-input-number v-model="discoverPara.Time" max="356400" min="0"/>&nbsp;
+                  <el-icon v-bind:title="'max : 356400'"><warning/></el-icon>
+                </el-form-item>
+                <el-form-item label="Pressure">
+                  <el-input-number v-model="discoverPara.Pressure" max="300" min="0"/>&nbsp;
+                  <el-icon v-bind:title="'max : 300'"><warning/></el-icon>
+                </el-form-item>
+                <el-form-item label="Stirring">
+                  <el-input-number v-model="discoverPara.Stirring" max="900" min="0"/>&nbsp;
+                  <el-icon v-bind:title="'max : 900'"><warning/></el-icon>
+                </el-form-item>
+                <el-form-item label="Power Interval">
+                  <el-input-number v-model="discoverPara.Power_Interval"/>
+                </el-form-item>
+                <el-form-item label="Cooling Interval">
+                  <el-input-number v-model="discoverPara.Cooling_Interval"/>
+                </el-form-item>
+                <el-form-item label="Max Temperature">
+                  <el-input-number v-model="discoverPara.Maximum_Temperature" max="300" min="0"/>
+                    &nbsp;
+                  <el-icon v-bind:title="'max : 300'"><warning/></el-icon>
+                </el-form-item>
+                <el-form-item label="Min Temperature">
+                  <el-input-number v-model="discoverPara.Minimum_Temperature" max="300" min="0"/>
+                </el-form-item>
+                <el-form-item label="Number of Cycles">
+                  <el-input-number v-model="discoverPara.Number_of_Cycles"/>
+                </el-form-item>
+              </el-form>
+            </el-scrollbar>
           </el-tab-pane>
 
           <el-tab-pane label="7" name="seventh">
-            <el-form ref="cmd-gc" :label-position="'right'"
-              style="width: 70%; margin-top: 8%;">
-              <el-form-item label="CMD">
-                <el-select v-model="CmdGCVal" placeholder="Choose">
-                  <el-option v-for="item in CmdGC" :key="item.value" :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-form>
-            <el-form v-if="CmdGCVal == 'INIT'" ref="form-gc" :label-position="'right'"
-              style="width: 70%; margin-top: 3%;">
-              <!-- <el-form-item label="Type" style="margin-bottom: 2%;">
-                <el-input v-model="gcPara.Type"></el-input>
-              </el-form-item> -->
-              <el-form-item label="ProjectId" style="margin-bottom: 2%;">
-                <el-input v-model="gcPara.ProjectId"></el-input>
-              </el-form-item>
-              <el-form-item label="AcquisitionMethodPath" style="margin-bottom: 2%;">
-                <el-input v-model="gcPara.SequenceInjections[0].AcquisitionMethodPath"></el-input>
-              </el-form-item>
-              <el-form-item label="SampleLocation" style="margin-bottom: 2%;">
-                <el-input v-model="gcPara.SequenceInjections[0].SampleLocation"></el-input>
-              </el-form-item>
-              <el-form-item label="InjectionVolume" style="margin-bottom: 2%;">
-                <el-input v-model="gcPara.SequenceInjections[0].InjectionVolume"></el-input>
-              </el-form-item>
-              <el-form-item label="SampleType" style="margin-bottom: 2%;">
-                <el-input v-model="gcPara.SequenceInjections[0].SampleType"></el-input>
-              </el-form-item>
-              <el-form-item label="SampleName" style="margin-bottom: 2%;">
-                <el-input v-model="gcPara.SequenceInjections[0].SampleName"></el-input>
-              </el-form-item>
-              <el-form-item label="SampleAmount" style="margin-bottom: 2%;">
-                <el-input v-model="gcPara.SequenceInjections[0].SampleAmount"></el-input>
-              </el-form-item>
-              <el-form-item label="SampleDescription" style="margin-bottom: 2%;">
-                <el-input v-model="gcPara.SequenceInjections[0].SampleDescription"></el-input>
-              </el-form-item>
-              <el-form-item label="DataFilename" style="margin-bottom: 2%;">
-                <el-input v-model="gcPara.SequenceInjections[0].DataFilename"></el-input>
-              </el-form-item>
-              <el-form-item label="SelectedInjection">
-                <el-input v-model="gcPara.SequenceInjections[0].SelectedInjection"></el-input>
-              </el-form-item>
-            </el-form>
+            <el-scrollbar height="48vh">
+              <el-form ref="cmd-gc" :label-position="'right'"
+                style="width: 70%; margin-top: 8%;">
+                <el-form-item label="CMD">
+                  <el-select v-model="CmdGCVal" placeholder="Choose">
+                    <el-option v-for="item in CmdGC" :key="item.value" :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-form>
+              <el-form v-if="CmdGCVal == 'INIT'" ref="form-gc" :label-position="'right'"
+                style="width: 70%; margin-top: 3%;">
+                <!-- <el-form-item label="Type">
+                  <el-input v-model="gcPara.Type"></el-input>
+                </el-form-item> -->
+                <el-form-item label="ProjectId">
+                  <el-input v-model="gcPara.ProjectId"></el-input>
+                </el-form-item>
+                <el-form-item label="AcquisitionMethodPath">
+                  <el-input v-model="gcPara.SequenceInjections[0].AcquisitionMethodPath"></el-input>
+                </el-form-item>
+                <el-form-item label="SampleLocation">
+                  <el-input v-model="gcPara.SequenceInjections[0].SampleLocation"></el-input>
+                </el-form-item>
+                <el-form-item label="InjectionVolume">
+                  <el-input v-model="gcPara.SequenceInjections[0].InjectionVolume"></el-input>
+                </el-form-item>
+                <el-form-item label="SampleType">
+                  <el-input v-model="gcPara.SequenceInjections[0].SampleType"></el-input>
+                </el-form-item>
+                <el-form-item label="SampleName">
+                  <el-input v-model="gcPara.SequenceInjections[0].SampleName"></el-input>
+                </el-form-item>
+                <el-form-item label="SampleAmount">
+                  <el-input v-model="gcPara.SequenceInjections[0].SampleAmount"></el-input>
+                </el-form-item>
+                <el-form-item label="SampleDescription">
+                  <el-input v-model="gcPara.SequenceInjections[0].SampleDescription"></el-input>
+                </el-form-item>
+                <el-form-item label="DataFilename">
+                  <el-input v-model="gcPara.SequenceInjections[0].DataFilename"></el-input>
+                </el-form-item>
+                <el-form-item label="SelectedInjection">
+                  <el-input v-model="gcPara.SequenceInjections[0].SelectedInjection"></el-input>
+                </el-form-item>
+              </el-form>
+            </el-scrollbar>
           </el-tab-pane>
         </el-tabs>
       </div>
