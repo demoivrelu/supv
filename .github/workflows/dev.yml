@@ -7,6 +7,7 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     steps:
+    - run: ping 10.99.150.31
     - run: pwd
     - uses: actions/checkout@v4
     # - name: Checkout repository code
