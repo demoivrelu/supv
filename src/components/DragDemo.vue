@@ -72,7 +72,7 @@
             @clone="onClone"
             :sort="false"
           >
-          <el-col @click="handleClick(AAA[0])" class="box"
+          <el-col @click="handleClick(AAA[0])" :class="ClassUnchained"
             @mouseenter="setPointer"
             @focus="handleFocus"
             @mouseleave="unsetPointer"
@@ -91,7 +91,7 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(BBB[0])" class="box"
+            <el-col @click="handleClick(BBB[0])" :class="ClassRobot1"
             @mouseenter="setPointer"
             @focus="handleFocus"
             @mouseleave="unsetPointer"
@@ -110,7 +110,7 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(CCC[0])" class="box"
+            <el-col @click="handleClick(CCC[0])" :class="ClassCytation1"
             @mouseenter="setPointer"
             @focus="handleFocus"
             @mouseleave="unsetPointer"
@@ -129,7 +129,7 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(DDD[0])" class="box"
+            <el-col @click="handleClick(DDD[0])" :class="ClassThermo"
             @mouseenter="setPointer"
             @focus="handleFocus"
             @mouseleave="unsetPointer"
@@ -148,7 +148,7 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(EEE[0])" class="box"
+            <el-col @click="handleClick(EEE[0])" :class="ClassHamilton"
             @mouseenter="setPointer"
             @focus="handleFocus"
             @mouseleave="unsetPointer"
@@ -167,7 +167,7 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(FFF[0])" class="box"
+            <el-col @click="handleClick(FFF[0])" :class="ClassDiscover"
             @mouseenter="setPointer"
             @focus="handleFocus"
             @mouseleave="unsetPointer"
@@ -186,7 +186,7 @@
             @clone="onClone"
             :sort="false"
           >
-            <el-col @click="handleClick(GGG[0])" class="box"
+            <el-col @click="handleClick(GGG[0])" :class="ClassGC"
             @mouseenter="setPointer"
             @focus="handleFocus"
             @mouseleave="unsetPointer"
@@ -195,6 +195,25 @@
               <div class="title">GC</div>
               <el-image :src='gc' class="el-img"
                 style="translate: 0px -5px;transform: scale(0.9) scaleX(1.15);"></el-image>
+            </el-col>
+          </VueDraggable>
+          <VueDraggable
+            v-model="aaaData"
+            animation="150"
+            ghostClass="ghost"
+            :group="{ name: 'people', pull: 'clone', put: false }"
+            @clone="onClone"
+            :sort="false"
+          >
+            <el-col @click="handleClick(aaaData[0])" :class="ClassAAA"
+            @mouseenter="setPointer"
+            @focus="handleFocus"
+            @mouseleave="unsetPointer"
+            @blur="handleBlur"
+            >
+              <div class="title">AAA</div>
+              <!-- <el-image :src='gc' class="el-img"
+                style="translate: 0px -5px;transform: scale(0.9) scaleX(1.15);"></el-image> -->
             </el-col>
           </VueDraggable>
         </el-row>
@@ -269,6 +288,14 @@
                 <el-input v-model="unchainedPara.ParaChanger"></el-input>
               </el-form-item> -->
             </el-form>
+            <div align="right" style="height: 5vh">
+              <el-button @click="run('RESET', AAA[0])">
+                <el-icon> <refresh /></el-icon>
+              </el-button>
+              <el-button @click="run(CmdUnchainedVal, AAA[0])" style="margin-right:16%">
+                Run
+              </el-button>
+            </div>
           </el-tab-pane>
 
           <el-tab-pane label="2" name="second" align="center">
@@ -306,6 +333,14 @@
                 </el-select>
               </el-form-item>
             </el-form>
+            <div align="right" style="height: 5vh">
+              <el-button @click="run('RESET', BBB[0])">
+                <el-icon> <refresh /></el-icon>
+              </el-button>
+              <el-button @click="run(CmdRobot1Val, BBB[0])" style="margin-right:16%">
+                Run
+              </el-button>
+            </div>
           </el-tab-pane>
 
           <el-tab-pane label="3" name="third" align="center">
@@ -502,6 +537,37 @@
               </el-form>
             </el-scrollbar>
           </el-tab-pane>
+
+          <el-tab-pane label="8" name="eighth">
+            <el-form ref="cmd-AAA" :label-position="'right'"
+              style="width: 70%; margin-top: 8%;">
+              <el-form-item label="CMD">
+                <el-select v-model="CmdAAAVal" placeholder="Choose">
+                  <el-option v-for="item in CmdAAA" :key="item.value" :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <el-form v-if="CmdAAAVal == 'INIT'" ref="form-aaa" :label-position="'right'"
+              style="width: 70%; margin-top: 3%;">
+              <el-form-item label="RemotePath">
+                <el-input v-model="aaaPara.ProjectName" style="width: 90%"/>&nbsp;
+                <el-icon v-bind:title="'Experimental file path in AAA IPC'">
+                  <warning />
+                </el-icon>
+              </el-form-item>
+            </el-form>
+            <div align="right" style="height: 5vh">
+              <el-button @click="run('RESET', aaaData[0])">
+                <el-icon> <refresh /></el-icon>
+              </el-button>
+              <el-button @click="run(CmdAAAVal, aaaData[0])" style="margin-right:16%">
+                Run
+              </el-button>
+            </div>
+          </el-tab-pane>
+
         </el-tabs>
       </div>
       <div class="sub_gap"></div>
@@ -595,6 +661,32 @@ const nowRow = ref(0);
 const currentInstance = ref();
 const activeName = ref('second');
 const userList = ref([]);
+
+const CmdAAA = [{
+  value: 'START',
+  label: 'START',
+},
+{
+  value: 'INIT',
+  label: 'INIT',
+}];
+
+const CmdAAAVal = ref(CmdAAA[1].value);
+const aaaPara = ref('AAA');
+
+const aaaData = ref([
+  {
+    Instrument: 'AAA',
+    Command: CmdAAAVal,
+    Parameter: JSON.stringify(aaaPara.value),
+    RemotePath: '',
+    LocalPath: '',
+    Time: 800,
+    Parallel: false,
+    Release: false,
+    Status: null,
+  },
+]);
 
 const CmdUnchained = [{
   value: 'START',
@@ -948,6 +1040,9 @@ function handleClick(item: { Instrument: string;}) {
   if (item.Instrument === 'GC') {
     activeName.value = 'seventh';
   }
+  if (item.Instrument === 'AAA') {
+    activeName.value = 'eighth';
+  }
 }
 
 function deleteItem(row: JSON, index: number) {
@@ -1096,6 +1191,27 @@ function submit() {
     });
 }
 
+function run(_cmd: string, _para: JSON) {
+  console.log('...para', _para, '  cmd:', _cmd);
+  const tmp = {
+    'user': 'dell',
+    'Instrument': _para.Instrument,
+    'CMD': _cmd,
+    'Para': _para.Parameter,
+    'RemotePath': _para.RemotePath,
+    'LocalPath': _para.LocalPath,
+    'TimeAllowed': _para.Time,
+    'Parallel': _para.Parallel,
+    'Release': _para.Release,
+  };
+  console.log(tmp);
+  axios
+    .post('/srv/CMD', tmp)
+    .then((res) => {
+      console.log(res);
+    });
+}
+
 function setPointer() {
   document.body.style.cursor = 'move';
 }
@@ -1112,8 +1228,36 @@ function handleBlur() {
   currentInstance.value = getCurrentInstance();
 }
 
+const instrumentList = ref(['Hamilton', 'Cytation1', 'Robot1', 'Unchained', 'Discover', 'GC', 'Thermo', 'AAA']);
+
+const ClassAAA = ref('box');
+const ClassUnchained = ref('box');
+const ClassRobot1 = ref('box');
+const ClassHamilton = ref('box');
+const ClassCytation1 = ref('box');
+const ClassDiscover = ref('box');
+const ClassGC = ref('box');
+const ClassThermo = ref('box');
+
 onMounted(() => {
   currentInstance.value = getCurrentInstance();
+  // setInterval(() => {
+  //   instrumentList.value.forEach((inst) => {
+  //     axios.post('/srv/STA', { 'Instrument': inst }).then((res) => {
+  //       switch (inst) {
+  //         case 'AAA': ClassAAA.value = `box ${res.data.sta}`; break;
+  //         case 'Unchained': ClassUnchained.value = `box ${res.data.sta}`; break;
+  //         case 'Robot1': ClassRobot1.value = `box ${res.data.sta}`; break;
+  //         case 'Hamilton': ClassHamilton.value = `box ${res.data.sta}`; break;
+  //         case 'Cytation1': ClassCytation1.value = `box ${res.data.sta}`; break;
+  //         case 'Discover': ClassDiscover.value = `box ${res.data.sta}`; break;
+  //         case 'GC': ClassGC.value = `box ${res.data.sta}`; break;
+  //         case 'Thermo': ClassThermo.value = `box ${res.data.sta}`; break;
+  //         default: break;
+  //       }
+  //     });
+  //   });
+  // }, 1500);
 });
 </script>
 
@@ -1168,11 +1312,31 @@ onMounted(() => {
   margin-bottom: 10px;
   margin-top: 5px;
   box-shadow: 2px 2px 8px #888888;
+  background-color: #ddd;
 }
 
 .box:hover{
   transform: scale(1.06);
   transition: 0.5s;
+}
+@keyframes blink-green {
+  0% {
+    background-color: rgb(201, 245, 230);
+  }
+  50% {
+    background-color: rgb(7, 221, 150);
+  }
+  100% {
+    background-color: rgb(201, 245, 230);
+  }
+}
+
+.Running{
+  animation: blink-green 1.2s infinite;
+}
+
+.Error{
+  background-color: rgb(255, 89, 89);
 }
 
 .para-box{
