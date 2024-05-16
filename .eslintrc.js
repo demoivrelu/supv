@@ -24,6 +24,7 @@ module.exports = {
     'vuejs-accessibility/click-events-have-key-events': 'off',
     "global-require": 0,
     "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/no-explicit-any": ["off"],
     // "vue/setup-compiler-macros": 0,
     // 'linebreak-style': ["error", "windows"],
   },

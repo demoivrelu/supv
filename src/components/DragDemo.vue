@@ -374,53 +374,57 @@
           </el-tab-pane>
 
           <el-tab-pane label="4" name="fourth">
-            <el-form ref="cmd-thermo" :label-position="'right'"
-              style="width: 70%; margin-top: 8%;">
-              <el-form-item label="CMD">
-                <el-select v-model="CmdThermoVal" placeholder="Choose">
-                  <el-option v-for="item in CmdThermo" :key="item.value" :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-form>
-            <el-form v-if="CmdThermoVal == 'INIT'" ref="form-thermo" :label-position="'right'"
-              style="width: 70%; margin-top: 3%;">
-              <el-form-item label="ProcessingMethod">
-                <el-input v-model="thermoPara.ProcessingMethod"></el-input>
-              </el-form-item>
-              <el-form-item label="InstrumentMethod">
-                <el-input v-model="thermoPara.InstrumentMethod"></el-input>
-              </el-form-item>
-              <el-form-item label="Injection" >
-                <el-input v-model="thermoPara.Injection[0][0]" style="width: 30%"/>
-                <el-input v-model="thermoPara.Injection[0][1]" style="margin-left:12px;width: 30%"/>
-                <el-input v-model="thermoPara.Injection[0][2]" style="margin-left:12px;width: 30%"/>
-              </el-form-item>
-              <el-form-item label="SequenceName">
-                <el-input v-model="thermoPara.SequenceName"></el-input>
-              </el-form-item>
-              <el-form-item label="TemplateName">
-                <el-input v-model="thermoPara.TemplateName"></el-input>
-              </el-form-item>
-              <el-form-item label="ProjectName">
-                <el-input v-model="thermoPara.ProjectName"></el-input>
-              </el-form-item>
-              <el-form-item label="Channels">
-                <el-input v-model="thermoPara.Channels[0]"></el-input>
-              </el-form-item>
-              <el-form-item label="New">
-                <el-switch v-model="thermoPara.New"></el-switch>
-              </el-form-item>
-            </el-form>
-            <div align="right" style="height: 5vh">
-              <el-button @click="run('RESET', DDD[0])">
-                <el-icon> <refresh /></el-icon>
-              </el-button>
-              <el-button @click="run(CmdThermoVal, DDD[0])" style="margin-right:16%">
-                Run
-              </el-button>
-            </div>
+            <el-scrollbar height="48vh">
+              <el-form ref="cmd-thermo" :label-position="'right'"
+                style="width: 70%; margin-top: 8%;">
+                <el-form-item label="CMD">
+                  <el-select v-model="CmdThermoVal" placeholder="Choose">
+                    <el-option v-for="item in CmdThermo" :key="item.value" :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-form>
+              <el-form v-if="CmdThermoVal == 'INIT'" ref="form-thermo" :label-position="'right'"
+                style="width: 70%; margin-top: 3%;">
+                <el-form-item label="ProcessingMethod">
+                  <el-input v-model="thermoPara.ProcessingMethod"></el-input>
+                </el-form-item>
+                <el-form-item label="InstrumentMethod">
+                  <el-input v-model="thermoPara.InstrumentMethod"></el-input>
+                </el-form-item>
+                <el-form-item label="Injection" >
+                  <el-input v-model="thermoPara.Injection[0][0]" style="width:30%"/>
+                  <el-input v-model="thermoPara.Injection[0][1]" style="margin-left:12px;width:30%">
+                  </el-input>
+                  <el-input v-model="thermoPara.Injection[0][2]" style="margin-left:12px;width:30%">
+                  </el-input>
+                </el-form-item>
+                <el-form-item label="SequenceName">
+                  <el-input v-model="thermoPara.SequenceName"></el-input>
+                </el-form-item>
+                <el-form-item label="TemplateName">
+                  <el-input v-model="thermoPara.TemplateName"></el-input>
+                </el-form-item>
+                <el-form-item label="ProjectName">
+                  <el-input v-model="thermoPara.ProjectName"></el-input>
+                </el-form-item>
+                <el-form-item label="Channels">
+                  <el-input v-model="thermoPara.Channels[0]"></el-input>
+                </el-form-item>
+                <el-form-item label="New">
+                  <el-switch v-model="thermoPara.New"></el-switch>
+                </el-form-item>
+              </el-form>
+              <div align="right" style="height: 5vh">
+                <el-button @click="run('RESET', DDD[0])">
+                  <el-icon> <refresh /></el-icon>
+                </el-button>
+                <el-button @click="run(CmdThermoVal, DDD[0])" style="margin-right:16%">
+                  Run
+                </el-button>
+              </div>
+            </el-scrollbar>
           </el-tab-pane>
 
           <el-tab-pane label="5" name="fifth">
@@ -589,7 +593,7 @@
             <el-form v-if="CmdAAAVal == 'INIT'" ref="form-aaa" :label-position="'right'"
               style="width: 70%; margin-top: 3%;">
               <el-form-item label="RemotePath">
-                <el-input v-model="aaaPara.ProjectName" style="width: 90%"/>&nbsp;
+                <el-input v-model="aaaPara" style="width: 90%"/>&nbsp;
                 <el-icon v-bind:title="'Experimental file path in AAA IPC'">
                   <warning />
                 </el-icon>
@@ -1152,33 +1156,33 @@ function currentChange(currentPage: number) {
   currentpage.value = currentPage;
 }
 
-function handleData(_val: object) {
-  axios.post(`${url}/main-page/get-cc-chart`, { id: _val.id }).then((res) => {
+function handleData(_val: any) {
+  axios.post(`${url}/main-page/get-cc-chart`, { id: _val.id }).then((res: any) => {
     userList.value = res.data.data;
     for (let index = 0; index < res.data.data.length; index += 1) {
-      userList.value[index].Instrument = res.data.data[index].instrument;
-      delete userList.value[index].instrument;
-      userList.value[index].Command = res.data.data[index].command;
-      delete userList.value[index].command;
-      userList.value[index].Parameter = res.data.data[index].parameter;
-      delete userList.value[index].parameter;
-      userList.value[index].RemotePath = res.data.data[index].remote_path;
-      delete userList.value[index].remote_path;
-      userList.value[index].LocalPath = res.data.data[index].local_path;
-      delete userList.value[index].local_path;
-      userList.value[index].Time = res.data.data[index].time_allowed;
-      delete userList.value[index].time_allowed;
-      userList.value[index].Parallel = !!res.data.data[index].parallel;
-      delete userList.value[index].parallel;
-      userList.value[index].Release = !!res.data.data[index].release;
-      delete userList.value[index].release;
-      userList.value[index].Status = res.data.data[index].status;
-      delete userList.value[index].status;
-      delete userList.value[index].pointer;
-      delete userList.value[index].locked;
-      delete userList.value[index].id;
-      delete userList.value[index].project_id;
-      delete userList.value[index].local_id;
+      (userList.value[index] as any).Instrument = res.data.data[index].instrument;
+      delete (userList.value[index] as any).instrument;
+      (userList.value[index] as any).Command = res.data.data[index].command;
+      delete (userList.value[index] as any).command;
+      (userList.value[index] as any).Parameter = res.data.data[index].parameter;
+      delete (userList.value[index] as any).parameter;
+      (userList.value[index] as any).RemotePath = res.data.data[index].remote_path;
+      delete (userList.value[index] as any).remote_path;
+      (userList.value[index] as any).LocalPath = res.data.data[index].local_path;
+      delete (userList.value[index] as any).local_path;
+      (userList.value[index] as any).Time = res.data.data[index].time_allowed;
+      delete (userList.value[index] as any).time_allowed;
+      (userList.value[index] as any).Parallel = !!res.data.data[index].parallel;
+      delete (userList.value[index] as any).parallel;
+      (userList.value[index] as any).Release = !!res.data.data[index].release;
+      delete (userList.value[index] as any).release;
+      (userList.value[index] as any).Status = res.data.data[index].status;
+      delete (userList.value[index] as any).status;
+      delete (userList.value[index] as any).pointer;
+      delete (userList.value[index] as any).locked;
+      delete (userList.value[index] as any).id;
+      delete (userList.value[index] as any).project_id;
+      delete (userList.value[index] as any).local_id;
     }
   });
 }
@@ -1232,7 +1236,7 @@ function submit() {
     });
 }
 
-function run(_cmd: string, _para: JSON) {
+function run(_cmd: string, _para: any) {
   const tmp = {
     'user': 'dell',
     'Instrument': _para.Instrument,
