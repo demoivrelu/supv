@@ -1,0 +1,2 @@
+(function(){const e="/srv/STAALL",t="/srv/CMD";async function n(){let t="";return await fetch(e,{method:"POST",headers:{"Content-Type":"application/json"},body:{}}).then((e=>e.json())).then((e=>{t=e})).catch((e=>{console.error("Error fetching data:",e)})),t}onmessage=e=>{fetch(t,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e.data)})},setInterval((()=>{n("AAA").then((e=>{postMessage(e)}))}),1e3)})();
+//# sourceMappingURL=598.771e128d.js.map
