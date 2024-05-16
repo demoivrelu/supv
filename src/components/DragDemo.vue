@@ -363,6 +363,14 @@
                 </el-icon>
               </el-form-item>
             </el-form>
+            <div align="right" style="height: 5vh">
+              <el-button @click="run('RESET', CCC[0])">
+                <el-icon> <refresh /></el-icon>
+              </el-button>
+              <el-button @click="run(CmdCytation1Val, CCC[0])" style="margin-right:16%">
+                Run
+              </el-button>
+            </div>
           </el-tab-pane>
 
           <el-tab-pane label="4" name="fourth">
@@ -405,6 +413,14 @@
                 <el-switch v-model="thermoPara.New"></el-switch>
               </el-form-item>
             </el-form>
+            <div align="right" style="height: 5vh">
+              <el-button @click="run('RESET', DDD[0])">
+                <el-icon> <refresh /></el-icon>
+              </el-button>
+              <el-button @click="run(CmdThermoVal, DDD[0])" style="margin-right:16%">
+                Run
+              </el-button>
+            </div>
           </el-tab-pane>
 
           <el-tab-pane label="5" name="fifth">
@@ -427,6 +443,14 @@
                 </el-icon>
               </el-form-item>
             </el-form>
+            <div align="right" style="height: 5vh">
+              <el-button @click="run('RESET', EEE[0])">
+                <el-icon> <refresh /></el-icon>
+              </el-button>
+              <el-button @click="run(CmdHamiltonVal, EEE[0])" style="margin-right:16%">
+                Run
+              </el-button>
+            </div>
           </el-tab-pane>
 
           <el-tab-pane label="6" name="sixth">
@@ -484,6 +508,14 @@
                   <el-input-number v-model="discoverPara.Number_of_Cycles"/>
                 </el-form-item>
               </el-form>
+              <div align="right" style="height: 5vh">
+              <el-button @click="run('RESET', FFF[0])">
+                <el-icon> <refresh /></el-icon>
+              </el-button>
+              <el-button @click="run(CmdDiscoverVal, FFF[0])" style="margin-right:16%">
+                Run
+              </el-button>
+            </div>
             </el-scrollbar>
           </el-tab-pane>
 
@@ -501,9 +533,6 @@
               </el-form>
               <el-form v-if="CmdGCVal == 'INIT'" ref="form-gc" :label-position="'right'"
                 style="width: 70%; margin-top: 3%;">
-                <!-- <el-form-item label="Type">
-                  <el-input v-model="gcPara.Type"></el-input>
-                </el-form-item> -->
                 <el-form-item label="ProjectId">
                   <el-input v-model="gcPara.ProjectId"></el-input>
                 </el-form-item>
@@ -535,6 +564,14 @@
                   <el-input v-model="gcPara.SequenceInjections[0].SelectedInjection"></el-input>
                 </el-form-item>
               </el-form>
+              <div align="right" style="height: 5vh">
+              <el-button @click="run('RESET', GGG[0])">
+                <el-icon> <refresh /></el-icon>
+              </el-button>
+              <el-button @click="run(CmdGCVal, GGG[0])" style="margin-right:16%">
+                Run
+              </el-button>
+            </div>
             </el-scrollbar>
           </el-tab-pane>
 
@@ -614,13 +651,15 @@
               </template>
             </el-table-column>
             <el-table-column label="Opt" v-slot="{ row, $index }">
-              <el-button
-                @click="deleteItem(row, $index)"
-                icon="el-icon-delete"
-                circle
-              >
-                <el-icon><Delete /></el-icon>
-              </el-button>
+              <div style="height: 10vh; display: flex; align-items: center">
+                <el-button
+                  @click="deleteItem(row, $index)"
+                  icon="el-icon-delete"
+                  circle
+                >
+                  <el-icon style="margin-left: -5px"><Delete /></el-icon>
+                </el-button>
+              </div>
             </el-table-column>
           </el-table>
           <!-- {{ userList }} -->
@@ -646,6 +685,8 @@ import {
 } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import * as XLSX from 'xlsx';
+
+const worker = new Worker(new URL('./Utils/worker.js', import.meta.url));
 
 const url = 'http://192.168.1.33:81';
 
@@ -1192,7 +1233,6 @@ function submit() {
 }
 
 function run(_cmd: string, _para: JSON) {
-  console.log('...para', _para, '  cmd:', _cmd);
   const tmp = {
     'user': 'dell',
     'Instrument': _para.Instrument,
@@ -1204,12 +1244,12 @@ function run(_cmd: string, _para: JSON) {
     'Parallel': _para.Parallel,
     'Release': _para.Release,
   };
-  console.log(tmp);
-  axios
-    .post('/srv/CMD', tmp)
-    .then((res) => {
-      console.log(res);
-    });
+  worker.postMessage(tmp);
+  // axios
+  //   .post('/srv/CMD', tmp)
+  //   .then((res) => {
+  //     console.log(res);
+  //   });
 }
 
 function setPointer() {
@@ -1228,8 +1268,6 @@ function handleBlur() {
   currentInstance.value = getCurrentInstance();
 }
 
-const instrumentList = ref(['Hamilton', 'Cytation1', 'Robot1', 'Unchained', 'Discover', 'GC', 'Thermo', 'AAA']);
-
 const ClassAAA = ref('box');
 const ClassUnchained = ref('box');
 const ClassRobot1 = ref('box');
@@ -1239,25 +1277,53 @@ const ClassDiscover = ref('box');
 const ClassGC = ref('box');
 const ClassThermo = ref('box');
 
+function changeClass(inst: string, sta: string) {
+  switch (inst) {
+    case 'AAA':
+      ClassAAA.value = `box ${sta}`;
+      break;
+    case 'Unchained':
+      ClassUnchained.value = `box ${sta}`;
+      break;
+    case 'Robot1':
+      ClassRobot1.value = `box ${sta}`;
+      break;
+    case 'Hamilton':
+      ClassHamilton.value = `box ${sta}`;
+      break;
+    case 'Cytation1':
+      ClassCytation1.value = `box ${sta}`;
+      break;
+    case 'Discover':
+      ClassDiscover.value = `box ${sta}`;
+      break;
+    case 'GC':
+      ClassGC.value = `box ${sta}`;
+      break;
+    case 'Thermo':
+      ClassThermo.value = `box ${sta}`;
+      break;
+    default:
+      break;
+  }
+}
+
 onMounted(() => {
   currentInstance.value = getCurrentInstance();
-  // setInterval(() => {
-  //   instrumentList.value.forEach((inst) => {
-  //     axios.post('/srv/STA', { 'Instrument': inst }).then((res) => {
-  //       switch (inst) {
-  //         case 'AAA': ClassAAA.value = `box ${res.data.sta}`; break;
-  //         case 'Unchained': ClassUnchained.value = `box ${res.data.sta}`; break;
-  //         case 'Robot1': ClassRobot1.value = `box ${res.data.sta}`; break;
-  //         case 'Hamilton': ClassHamilton.value = `box ${res.data.sta}`; break;
-  //         case 'Cytation1': ClassCytation1.value = `box ${res.data.sta}`; break;
-  //         case 'Discover': ClassDiscover.value = `box ${res.data.sta}`; break;
-  //         case 'GC': ClassGC.value = `box ${res.data.sta}`; break;
-  //         case 'Thermo': ClassThermo.value = `box ${res.data.sta}`; break;
-  //         default: break;
-  //       }
-  //     });
-  //   });
-  // }, 1500);
+  worker.onmessage = (event) => {
+    console.log('Received message from worker:', event.data.sta);
+    event.data.sta.forEach((arr: Array<string>) => {
+      if (arr[1] === 'Running') {
+        changeClass(arr[0], arr[1]);
+        console.log(arr);
+      } else if (arr[1] === 'Error') {
+        changeClass(arr[0], arr[1]);
+        console.log(arr);
+      } else {
+        changeClass(arr[0], '');
+      }
+    });
+  };
 });
 </script>
 
