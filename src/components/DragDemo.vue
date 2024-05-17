@@ -621,12 +621,19 @@
           ghostClass="ghost"
         >
           <el-table :data="userList" class="data-box">
+            <el-table-column>
+              <template v-slot="scope">
+                <el-radio :label="scope.$index" @change="handleSelectionChange(scope)"
+                  v-model="selected">
+                </el-radio>
+              </template>
+            </el-table-column>
             <el-table-column label="Name" prop="Instrument" :width="'95px'"/>
             <el-table-column label="CMD" prop="Command" :width="'70px'" />
             <el-table-column label="Para" prop="Parameter" :width="'180px'">
               <template v-slot="scope">
                 <el-input type="textarea" :rows="3" v-model="scope.row['Parameter']"></el-input>
-            </template>
+              </template>
             </el-table-column>
             <el-table-column prop="RemotePath" label="RemotePath" :width="'110px'">
               <template v-slot="scope">
@@ -666,6 +673,11 @@
               </div>
             </el-table-column>
           </el-table>
+          <div align="right">
+            <el-switch v-model="mode" @change="handleSwitchChange"></el-switch>
+            <el-button @click="EMERGENCY()">EMERGENCY</el-button>
+            <el-button @click="BOOT()">START</el-button>
+          </div>
           <!-- {{ userList }} -->
         </VueDraggable>
       </div>
@@ -726,7 +738,7 @@ const aaaData = ref([
     Parameter: JSON.stringify(aaaPara.value),
     RemotePath: '',
     LocalPath: '',
-    Time: 800,
+    Time: 20,
     Parallel: false,
     Release: false,
     Status: null,
@@ -1158,6 +1170,7 @@ function currentChange(currentPage: number) {
 
 function handleData(_val: any) {
   axios.post(`${url}/main-page/get-cc-chart`, { id: _val.id }).then((res: any) => {
+    // console.log('get ccdata: ', res.data);
     userList.value = res.data.data;
     for (let index = 0; index < res.data.data.length; index += 1) {
       (userList.value[index] as any).Instrument = res.data.data[index].instrument;
@@ -1185,9 +1198,14 @@ function handleData(_val: any) {
       delete (userList.value[index] as any).local_id;
     }
   });
+  axios.post(`${url}/main-page/get-cc-chart`, { id: _val.id }).then((res: any) => {
+    console.log('get ccdata: ', res.data);
+  });
 }
 
-function loadAll(_val: number) {
+function loadAll(_val: any) {
+  console.log(_val);
+  worker.postMessage({ sig: 'project', data: _val.id });
   nowRow.value = _val;
   if (nowRow.value == null) {
     dialogTableVisible.value = false;
@@ -1223,6 +1241,8 @@ function submit() {
     .post(`${url}/main-page/submit-project`, sendData)
     .then((res) => {
       if (res.status === 200) {
+        // console.log(res.data);
+        worker.postMessage({ sig: 'project', data: res.data.last_id });
         ElMessage({
           message: 'Submit successful',
           type: 'success',
@@ -1248,7 +1268,7 @@ function run(_cmd: string, _para: any) {
     'Parallel': _para.Parallel,
     'Release': _para.Release,
   };
-  worker.postMessage(tmp);
+  worker.postMessage({ sig: 'command', data: tmp });
   // axios
   //   .post('/srv/CMD', tmp)
   //   .then((res) => {
@@ -1270,6 +1290,51 @@ function unsetPointer() {
 
 function handleBlur() {
   currentInstance.value = getCurrentInstance();
+}
+
+// local_id selected
+const selected = ref(0);
+const mode = ref(true);
+
+const ccData = {
+  project_id: 0,
+  local_id: 0,
+  action: 'stop',
+  mode: 'single',
+  loop: 0,
+};
+function handleSwitchChange() {
+  ccData.mode = mode.value ? 'continous' : 'single';
+  console.log(mode);
+}
+
+// function dealCCData(
+//   _projectId: number,
+//   _localId: number,
+//   _action: string,
+//   _mode: string,
+//   _loop: number,
+// ) {
+//   ccData.project_id = _projectId;
+//   ccData.local_id = _localId;
+//   ccData.action = _action;
+//   ccData.mode = _mode;
+//   ccData.loop = _loop;
+// }
+
+function handleSelectionChange(_row: any) {
+  selected.value = _row.$index;
+  worker.postMessage({ sig: 'local-id-changer', data: _row.$index });
+  console.log('', _row);
+}
+
+function BOOT() {
+  console.log(ccData);
+  ccData.action = 'start';
+  axios.post('/srv/SRV', ccData).then((res) => {
+    console.log(res);
+  });
+  // worker.postMessage({ sig: 'boot', data: ccData }); // { ccData: ccData.value });
 }
 
 const ClassAAA = ref('box');
@@ -1312,21 +1377,39 @@ function changeClass(inst: string, sta: string) {
   }
 }
 
+const projId = ref(null);
+
 onMounted(() => {
+  setInterval(() => {
+    console.log('current ccdata: ,,,,,', ccData);
+  }, 2000);
   currentInstance.value = getCurrentInstance();
   worker.onmessage = (event) => {
-    console.log('Received message from worker:', event.data.sta);
-    event.data.sta.forEach((arr: Array<string>) => {
-      if (arr[1] === 'Running') {
-        changeClass(arr[0], arr[1]);
-        console.log(arr);
-      } else if (arr[1] === 'Error') {
-        changeClass(arr[0], arr[1]);
-        console.log(arr);
-      } else {
-        changeClass(arr[0], '');
-      }
-    });
+    if (event.data.sig === 'status') {
+      event.data.data.sta.forEach((arr: Array<string>) => {
+        if (arr[1] === 'Running') {
+          changeClass(arr[0], arr[1]);
+        } else if (arr[1] === 'Error') {
+          changeClass(arr[0], arr[1]);
+        } else {
+          changeClass(arr[0], '');
+        }
+      });
+    }
+    if (event.data.sig === 'localId' && event.data.data !== 0) {
+      console.log('localId: ', typeof event.data.data);
+      ccData.local_id = Number(event.data.data);
+      selected.value = event.data.data - 1;
+    }
+    if (event.data.sig === 'project') {
+      ccData.action = 'stop';
+      console.log('project loaded : /////', event.data.data);
+      axios.post('/srv/SRV', ccData).then((res) => {
+        console.log(res);
+      });
+      ccData.project_id = event.data.data;
+      projId.value = event.data.data;
+    }
   };
 });
 </script>
