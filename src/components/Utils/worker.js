@@ -5,6 +5,7 @@ const proxyUrlCMD = '/srv/CMD';
 const proxyUrlLocalId = '/srv/LOCAL-ID-FINDER';
 const proxyUrlChanger = '/srv/LOCAL-ID-CHANGER';
 const proxyUrlBOOT = '/srv/SRV';
+const proxyUrlProjectStatus = '/srv/GET-PROJECT-STATUS';
 
 const projId = ref(null);
 
@@ -63,22 +64,28 @@ function setLocalId(_projectId, _localId) {
     });
 }
 
-function boot(_data) {
-  // console.log('boot: ', JSON.parse(_data));
-  fetch(proxyUrlBOOT, {
+async function getRunningStatus(_projectId) {
+  let status = null;
+  await fetch(proxyUrlProjectStatus, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(_data),
+    body: {},
   })
     .then((response) => response.json())
     .then((res) => {
-      console.log('boot: ', res);
+      res.data.forEach((item) => {
+        console.log('status: ', res.data, item.id, _projectId);
+        if (item.id === _projectId) {
+          status = item;
+        }
+      });
     })
     .catch((error) => {
       console.error('Error fetching data:', error);
     });
+  return status;
 }
 
 onmessage = (event) => {
@@ -127,6 +134,11 @@ setInterval(() => {
         postMessage({ sig: 'localId', data: res });
       }
       mem.value = res;
+    });
+
+    getRunningStatus(projId.value).then((res) => {
+      console.log('%%%%running-status: ', res);
+      postMessage({ sig: 'running-status', data: res });
     });
   }
 }, 1000);

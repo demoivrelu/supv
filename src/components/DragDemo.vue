@@ -1,10 +1,10 @@
 <template>
   <div align="center">
     <div align='right' style="margin-right: 12.5%; margin-top: 1%;">
-      <el-button plain @click="submit()">
+      <el-button plain @click="submit()" :disabled="disabled">
         <el-icon><Upload/></el-icon>
       </el-button>
-      <el-button plain @click="getUserData()">
+      <el-button plain @click="getUserData()" :disabled="disabled">
         <el-icon><folder-opened /></el-icon>
       </el-button>
       <el-button plain @click="exportExcel()" >
@@ -28,6 +28,8 @@
             6. The data could be imported from database when "Import" button pressed.<br><br>
             7. The data could be uploaded when "Upload" button pressed.<br><br>
             8. Parameter of each instrument displayed is default.<br><br>
+            9. If you want to run a table progress, please open an exist progress
+            in database or upload a new one.
           </div>
         </el-dialog>
           <el-dialog :modal-append-to-body="false"
@@ -292,7 +294,8 @@
               <el-button @click="run('RESET', AAA[0])">
                 <el-icon> <refresh /></el-icon>
               </el-button>
-              <el-button @click="run(CmdUnchainedVal, AAA[0])" style="margin-right:16%">
+              <el-button @click="run(CmdUnchainedVal, AAA[0])" :disabled="disabled"
+                style="margin-right:16%">
                 Run
               </el-button>
             </div>
@@ -337,7 +340,8 @@
               <el-button @click="run('RESET', BBB[0])">
                 <el-icon> <refresh /></el-icon>
               </el-button>
-              <el-button @click="run(CmdRobot1Val, BBB[0])" style="margin-right:16%">
+              <el-button @click="run(CmdRobot1Val, BBB[0])" :disabled="disabled"
+                style="margin-right:16%">
                 Run
               </el-button>
             </div>
@@ -367,7 +371,8 @@
               <el-button @click="run('RESET', CCC[0])">
                 <el-icon> <refresh /></el-icon>
               </el-button>
-              <el-button @click="run(CmdCytation1Val, CCC[0])" style="margin-right:16%">
+              <el-button @click="run(CmdCytation1Val, CCC[0])" :disabled="disabled"
+                style="margin-right:16%">
                 Run
               </el-button>
             </div>
@@ -420,7 +425,8 @@
                 <el-button @click="run('RESET', DDD[0])">
                   <el-icon> <refresh /></el-icon>
                 </el-button>
-                <el-button @click="run(CmdThermoVal, DDD[0])" style="margin-right:16%">
+                <el-button @click="run(CmdThermoVal, DDD[0])" :disabled="disabled"
+                  style="margin-right:16%">
                   Run
                 </el-button>
               </div>
@@ -451,7 +457,8 @@
               <el-button @click="run('RESET', EEE[0])">
                 <el-icon> <refresh /></el-icon>
               </el-button>
-              <el-button @click="run(CmdHamiltonVal, EEE[0])" style="margin-right:16%">
+              <el-button @click="run(CmdHamiltonVal, EEE[0])" :disabled="disabled"
+                style="margin-right:16%">
                 Run
               </el-button>
             </div>
@@ -516,7 +523,8 @@
               <el-button @click="run('RESET', FFF[0])">
                 <el-icon> <refresh /></el-icon>
               </el-button>
-              <el-button @click="run(CmdDiscoverVal, FFF[0])" style="margin-right:16%">
+              <el-button @click="run(CmdDiscoverVal, FFF[0])" :disabled="disabled"
+                style="margin-right:16%">
                 Run
               </el-button>
             </div>
@@ -572,7 +580,8 @@
               <el-button @click="run('RESET', GGG[0])">
                 <el-icon> <refresh /></el-icon>
               </el-button>
-              <el-button @click="run(CmdGCVal, GGG[0])" style="margin-right:16%">
+              <el-button @click="run(CmdGCVal, GGG[0])" :disabled="disabled"
+                style="margin-right:16%">
                 Run
               </el-button>
             </div>
@@ -603,7 +612,8 @@
               <el-button @click="run('RESET', aaaData[0])">
                 <el-icon> <refresh /></el-icon>
               </el-button>
-              <el-button @click="run(CmdAAAVal, aaaData[0])" style="margin-right:16%">
+              <el-button @click="run(CmdAAAVal, aaaData[0])" :disabled="disabled"
+                style="margin-right:16%">
                 Run
               </el-button>
             </div>
@@ -613,6 +623,11 @@
       </div>
       <div class="sub_gap"></div>
       <div class="sub4">
+        <div style="margin-top: 2%; margin-bottom: -4%;" align="right">
+          Loop:
+          <el-input-number v-model="loopNum" @change="handleLoopChange" min="0"
+            :disabled="disabled"/>
+        </div>
         <VueDraggable
           target="tbody"
           v-model="userList"
@@ -620,11 +635,12 @@
           group="people"
           ghostClass="ghost"
         >
-          <el-table :data="userList" class="data-box">
-            <el-table-column>
+          <el-table :data="userList" class="data-box" :disabled="disabled"
+            :cell-class-name="setClass">
+            <el-table-column :width="'42px'">
               <template v-slot="scope">
                 <el-radio :label="scope.$index" @change="handleSelectionChange(scope)"
-                  v-model="selected">
+                  v-model="selected" :disabled="disabled">
                 </el-radio>
               </template>
             </el-table-column>
@@ -632,33 +648,39 @@
             <el-table-column label="CMD" prop="Command" :width="'70px'" />
             <el-table-column label="Para" prop="Parameter" :width="'180px'">
               <template v-slot="scope">
-                <el-input type="textarea" :rows="3" v-model="scope.row['Parameter']"></el-input>
+                <el-input type="textarea" :rows="3" v-model="scope.row['Parameter']"
+                  :disabled="disabled"/>
               </template>
             </el-table-column>
             <el-table-column prop="RemotePath" label="RemotePath" :width="'110px'">
               <template v-slot="scope">
-                <el-input type="textarea" :rows="2" v-model="scope.row['RemotePath']">
+                <el-input type="textarea" :rows="2" v-model="scope.row['RemotePath']"
+                  :disabled="disabled">
                 </el-input>
               </template>
             </el-table-column>
             <el-table-column prop="LocalPath" label="LocalPath" :width="'110px'">
               <template v-slot="scope">
-                <el-input type="textarea" :rows="2" v-model="scope.row['LocalPath']"></el-input>
+                <el-input type="textarea" :rows="2" v-model="scope.row['LocalPath']"
+                  :disabled="disabled">
+                </el-input>
               </template>
             </el-table-column>
             <el-table-column prop="Time" label="Time(s)">
               <template v-slot="scope">
-                <el-input type="textarea" :rows="1" v-model="scope.row['Time']"></el-input>
+                <el-input type="textarea" :rows="1" v-model="scope.row['Time']"
+                  :disabled="disabled">
+                </el-input>
               </template>
             </el-table-column>
             <el-table-column prop="Parallel" label="Parallel">
               <template v-slot="scope">
-                <el-switch v-model="scope.row['Parallel']"></el-switch>
+                <el-switch v-model="scope.row['Parallel']" :disabled="disabled"></el-switch>
               </template>
             </el-table-column>
             <el-table-column prop="Release" label="Release">
               <template v-slot="scope">
-                <el-switch v-model="scope.row['Release']"></el-switch>
+                <el-switch v-model="scope.row['Release']" :disabled="disabled"></el-switch>
               </template>
             </el-table-column>
             <el-table-column label="Opt" v-slot="{ row, $index }">
@@ -667,16 +689,18 @@
                   @click="deleteItem(row, $index)"
                   icon="el-icon-delete"
                   circle
+                  :disabled="disabled"
                 >
                   <el-icon style="margin-left: -5px"><Delete /></el-icon>
                 </el-button>
               </div>
             </el-table-column>
           </el-table>
-          <div align="right">
-            <el-switch v-model="mode" @change="handleSwitchChange"></el-switch>
+          <div align="right" style="margin-top: 1%">
+            <el-switch v-model="mode" @change="handleSwitchChange" style="margin-right: 1%"
+              :disabled="disabled"/>
             <el-button @click="EMERGENCY()">EMERGENCY</el-button>
-            <el-button @click="BOOT()">START</el-button>
+            <el-button @click="BOOT()">{{ actionBtn }}</el-button>
           </div>
           <!-- {{ userList }} -->
         </VueDraggable>
@@ -686,7 +710,7 @@
 </template>
 
 <script lang='ts' setup>
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import unchained from '@/assets/img/unchained.png';
 import robot1 from '@/assets/img/robot1.png';
 import cytation1 from '@/assets/img/cytation1.png';
@@ -1243,6 +1267,9 @@ function submit() {
       if (res.status === 200) {
         // console.log(res.data);
         worker.postMessage({ sig: 'project', data: res.data.last_id });
+        axios.post(`${url}/main-page/get-cc-chart`, { id: res.data.last_id }).then((re: any) => {
+          console.log('get ccdata: ', re.data);
+        });
         ElMessage({
           message: 'Submit successful',
           type: 'success',
@@ -1255,6 +1282,19 @@ function submit() {
       }
     });
 }
+
+// local_id selected
+const selected = ref(0);
+const mode = ref(false);
+const disabled = ref(false);
+
+const ccData = {
+  project_id: 0,
+  local_id: 0,
+  action: 'stop',
+  mode: 'single',
+  loop: 0,
+};
 
 function run(_cmd: string, _para: any) {
   const tmp = {
@@ -1276,6 +1316,43 @@ function run(_cmd: string, _para: any) {
   //   });
 }
 
+function EMERGENCY() {
+  const tmp = {
+    'user': 'dell',
+    'Instrument': userList.value[selected.value].Instrument,
+    'CMD': 'Emergency',
+    'Para': '',
+    'RemotePath': '',
+    'LocalPath': '',
+    'TimeAllowed': 0,
+    'Parallel': false,
+    'Release': false,
+  };
+  worker.postMessage({ sig: 'command', data: tmp });
+  ElMessageBox({
+    title: 'Emergency',
+    // message: '是否确定删除当前项?',
+    confirmButtonText: 'Resume',
+    cancelButtonText: 'Break',
+    showCancelButton: true,
+    closeOnClickModal: false,
+    type: 'warning',
+  }).then(() => {
+    tmp.CMD = 'Resume';
+    worker.postMessage({ sig: 'command', data: tmp });
+    console.log(tmp);
+    ElMessage.success('Resume!');
+  }).catch(() => {
+    tmp.CMD = 'Break';
+    worker.postMessage({ sig: 'command', data: tmp });
+    ElMessage.info('Break!');
+    ccData.action = 'stop';
+    axios.post('/srv/SRV', ccData).then((res) => {
+      console.log(res);
+    });
+  });
+}
+
 function setPointer() {
   document.body.style.cursor = 'move';
 }
@@ -1292,20 +1369,15 @@ function handleBlur() {
   currentInstance.value = getCurrentInstance();
 }
 
-// local_id selected
-const selected = ref(0);
-const mode = ref(true);
-
-const ccData = {
-  project_id: 0,
-  local_id: 0,
-  action: 'stop',
-  mode: 'single',
-  loop: 0,
-};
+// single or continous mode
 function handleSwitchChange() {
   ccData.mode = mode.value ? 'continous' : 'single';
-  console.log(mode);
+}
+
+const loopNum = ref(0);
+
+function handleLoopChange() {
+  ccData.loop = loopNum.value;
 }
 
 // function dealCCData(
@@ -1325,12 +1397,18 @@ function handleSwitchChange() {
 function handleSelectionChange(_row: any) {
   selected.value = _row.$index;
   worker.postMessage({ sig: 'local-id-changer', data: _row.$index });
-  console.log('', _row);
 }
 
+const projId = ref(null);
+const runningStatus = ref(false);
+const actionBtn = ref('START');
+
 function BOOT() {
-  console.log(ccData);
-  ccData.action = 'start';
+  if (actionBtn.value === 'STOP') {
+    ccData.action = 'stop';
+  } else {
+    ccData.action = 'start';
+  }
   axios.post('/srv/SRV', ccData).then((res) => {
     console.log(res);
   });
@@ -1377,7 +1455,36 @@ function changeClass(inst: string, sta: string) {
   }
 }
 
-const projId = ref(null);
+const instrStatus = ref({
+  'AAA': '',
+  'Unchained': '',
+  'Robot1': '',
+  'Hamilton': '',
+  'Cytation1': '',
+  'Discover': '',
+  'GC': '',
+  'Thermo': '',
+});
+
+function conbineStatus(inst: string, sta: string) {
+  instrStatus.value[inst] = sta;
+}
+
+function setClass({
+  row, column, rowIndex, columnIndex,
+}) {
+  if (rowIndex === selected.value && instrStatus.value[row.Instrument] === 'Running') {
+    console.log('row: ', row);
+    return 'Running';
+  }
+  if (rowIndex === selected.value && instrStatus.value[row.Instrument] === 'Error') {
+    console.log('row: ', row);
+    return 'Error';
+  }
+  // if (columnIndex === 0) {
+  //   return 'addBorder';
+  // }
+}
 
 onMounted(() => {
   setInterval(() => {
@@ -1385,8 +1492,10 @@ onMounted(() => {
   }, 2000);
   currentInstance.value = getCurrentInstance();
   worker.onmessage = (event) => {
+    // module class
     if (event.data.sig === 'status') {
       event.data.data.sta.forEach((arr: Array<string>) => {
+        conbineStatus(arr[0], arr[1]);
         if (arr[1] === 'Running') {
           changeClass(arr[0], arr[1]);
         } else if (arr[1] === 'Error') {
@@ -1396,14 +1505,27 @@ onMounted(() => {
         }
       });
     }
+    // !!! get current project running status and loop
+    runningStatus.value = false;
+    if (event.data.sig === 'running-status') {
+      if (event.data.data === null) {
+        actionBtn.value = 'START';
+        disabled.value = false;
+      } else {
+        actionBtn.value = 'STOP';
+        disabled.value = true;
+        loopNum.value = event.data.data.loop;
+      }
+    }
+    // current local id
     if (event.data.sig === 'localId' && event.data.data !== 0) {
-      console.log('localId: ', typeof event.data.data);
       ccData.local_id = Number(event.data.data);
       selected.value = event.data.data - 1;
     }
     if (event.data.sig === 'project') {
+      // load, first send a action of 'stop'
       ccData.action = 'stop';
-      console.log('project loaded : /////', event.data.data);
+      ccData.mode = mode.value ? 'continous' : 'single';
       axios.post('/srv/SRV', ccData).then((res) => {
         console.log(res);
       });
@@ -1503,7 +1625,7 @@ onMounted(() => {
 
 .data-box{
   border: solid 1px #ccc; border-radius: 10px; margin-top: 5%;
-  height: 78vh;
+  height: 73vh;
   box-shadow: 1px 1px 6px #888888;
 }
 
