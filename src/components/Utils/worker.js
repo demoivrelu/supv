@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 
+const url = 'http://192.168.1.33:81/main-page';
 const proxyUrl = '/srv/STAALL';
 const proxyUrlCMD = '/srv/CMD';
 const proxyUrlLocalId = '/srv/LOCAL-ID-FINDER';
@@ -9,14 +10,32 @@ const proxyUrlProjectStatus = '/srv/GET-PROJECT-STATUS';
 
 const projId = ref(null);
 
+// async function getSta() {
+//   let sta = '';
+//   await fetch(proxyUrl, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({}),
+//   })
+//     .then((response) => response.json())
+//     .then((res) => {
+//       sta = res;
+//     })
+//     .catch((error) => {
+//       console.error('Error fetching data:', error);
+//     });
+//   return sta;
+// }
 async function getSta() {
   let sta = '';
-  await fetch(proxyUrl, {
+  await fetch(`${url}/get-status-all`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: {},
+    body: JSON.stringify({ 'Instrument': 'AAA' }),
   })
     .then((response) => response.json())
     .then((res) => {
@@ -30,7 +49,21 @@ async function getSta() {
 
 async function getLocalId(_projectId) {
   let localId = 0;
-  await fetch(proxyUrlLocalId, {
+  // await fetch(proxyUrlLocalId, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({ project_id: _projectId }),
+  // })
+  //   .then((response) => response.json())
+  //   .then((res) => {
+  //     localId = res.data.local_id;
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error fetching data:', error);
+  //   });
+  await fetch(`${url}/local-id-finder`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -48,7 +81,21 @@ async function getLocalId(_projectId) {
 }
 
 function setLocalId(_projectId, _localId) {
-  fetch(proxyUrlChanger, {
+  // fetch(proxyUrlChanger, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({ project_id: _projectId, local_id: _localId }),
+  // })
+  //   .then((response) => response.json())
+  //   .then((res) => {
+  //     console.log('setLocalId: ', res);
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error fetching data:', error);
+  //   });
+  fetch(`${url}/local-id-changer`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -66,12 +113,30 @@ function setLocalId(_projectId, _localId) {
 
 async function getRunningStatus(_projectId) {
   let status = null;
-  await fetch(proxyUrlProjectStatus, {
+  // await fetch(proxyUrlProjectStatus, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   // body: JSON.stringify({}),
+  // })
+  //   .then((response) => response.json())
+  //   .then((res) => {
+  //     res.data.forEach((item) => {
+  //       console.log('status: ', res.data, item.id, _projectId);
+  //       if (item.id === _projectId) {
+  //         status = item;
+  //       }
+  //     });
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error fetching data:', error);
+  //   });
+  await fetch(`${url}/get-project-status`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: {},
   })
     .then((response) => response.json())
     .then((res) => {
@@ -90,7 +155,14 @@ async function getRunningStatus(_projectId) {
 
 onmessage = (event) => {
   if (event.data.sig === 'command') {
-    fetch(proxyUrlCMD, {
+    // fetch(proxyUrlCMD, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(event.data.data),
+    // });
+    fetch(`${url}/cmd`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -107,7 +179,21 @@ onmessage = (event) => {
   }
   if (event.data.sig === 'boot') {
     console.log('boot:---- ', event.data.data);
-    fetch(proxyUrlBOOT, {
+    // fetch(proxyUrlBOOT, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(event.data.data),
+    // })
+    //   .then((response) => response.json())
+    //   .then((res) => {
+    //     console.log('boot: ', res);
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error fetching data:', error);
+    //   });
+    fetch(`${url}/cc`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -137,14 +223,13 @@ setInterval(() => {
     });
 
     getRunningStatus(projId.value).then((res) => {
-      console.log('%%%%running-status: ', res);
       postMessage({ sig: 'running-status', data: res });
     });
   }
-}, 1000);
+}, 1500);
 
 setInterval(() => {
   getSta('AAA').then((res) => {
     postMessage({ sig: 'status', data: res });
   });
-}, 1000);
+}, 1500);

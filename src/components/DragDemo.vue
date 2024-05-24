@@ -728,7 +728,7 @@ import * as XLSX from 'xlsx';
 
 const worker = new Worker(new URL('./Utils/worker.js', import.meta.url));
 
-const url = 'http://192.168.1.33:81';
+const url = 'http://192.168.1.33:81/main-page';
 
 const dialogHelpVisible = ref(false);
 const userDataLoading = ref(false);
@@ -1181,7 +1181,7 @@ function exportExcel() {
 function getUserData() {
   dialogTableVisible.value = true;
   userDataLoading.value = true;
-  axios.post(`${url}/main-page/get-projects`, { 'owner': 'abc' }).then((res) => {
+  axios.post(`${url}/get-projects`, { 'owner': 'abc' }).then((res) => {
     userData.value = res.data.data;
     total.value = userData.value.length;
     userDataLoading.value = false;
@@ -1193,7 +1193,7 @@ function currentChange(currentPage: number) {
 }
 
 function handleData(_val: any) {
-  axios.post(`${url}/main-page/get-cc-chart`, { id: _val.id }).then((res: any) => {
+  axios.post(`${url}/get-cc-chart`, { id: _val.id }).then((res: any) => {
     // console.log('get ccdata: ', res.data);
     userList.value = res.data.data;
     for (let index = 0; index < res.data.data.length; index += 1) {
@@ -1222,13 +1222,12 @@ function handleData(_val: any) {
       delete (userList.value[index] as any).local_id;
     }
   });
-  axios.post(`${url}/main-page/get-cc-chart`, { id: _val.id }).then((res: any) => {
+  axios.post(`${url}/get-cc-chart`, { id: _val.id }).then((res: any) => {
     console.log('get ccdata: ', res.data);
   });
 }
 
 function loadAll(_val: any) {
-  console.log(_val);
   worker.postMessage({ sig: 'project', data: _val.id });
   nowRow.value = _val;
   if (nowRow.value == null) {
@@ -1262,12 +1261,12 @@ function submit() {
     'input': '',
   };
   axios
-    .post(`${url}/main-page/submit-project`, sendData)
+    .post(`${url}/submit-project`, sendData)
     .then((res) => {
       if (res.status === 200) {
         // console.log(res.data);
         worker.postMessage({ sig: 'project', data: res.data.last_id });
-        axios.post(`${url}/main-page/get-cc-chart`, { id: res.data.last_id }).then((re: any) => {
+        axios.post(`${url}/get-cc-chart`, { id: res.data.last_id }).then((re: any) => {
           console.log('get ccdata: ', re.data);
         });
         ElMessage({
@@ -1310,7 +1309,7 @@ function run(_cmd: string, _para: any) {
   };
   worker.postMessage({ sig: 'command', data: tmp });
   // axios
-  //   .post('/srv/CMD', tmp)
+  //   .post(`${url}/cmd`, tmp)
   //   .then((res) => {
   //     console.log(res);
   //   });
@@ -1331,7 +1330,7 @@ function EMERGENCY() {
   worker.postMessage({ sig: 'command', data: tmp });
   ElMessageBox({
     title: 'Emergency',
-    // message: '是否确定删除当前项?',
+    // message: '?',
     confirmButtonText: 'Resume',
     cancelButtonText: 'Break',
     showCancelButton: true,
@@ -1347,9 +1346,10 @@ function EMERGENCY() {
     worker.postMessage({ sig: 'command', data: tmp });
     ElMessage.info('Break!');
     ccData.action = 'stop';
-    axios.post('/srv/SRV', ccData).then((res) => {
-      console.log(res);
-    });
+    worker.postMessage({ sig: 'boot', data: ccData });
+    // axios.post('/srv/SRV', ccData).then((res) => {
+    //   console.log(res);
+    // });
   });
 }
 
@@ -1380,20 +1380,6 @@ function handleLoopChange() {
   ccData.loop = loopNum.value;
 }
 
-// function dealCCData(
-//   _projectId: number,
-//   _localId: number,
-//   _action: string,
-//   _mode: string,
-//   _loop: number,
-// ) {
-//   ccData.project_id = _projectId;
-//   ccData.local_id = _localId;
-//   ccData.action = _action;
-//   ccData.mode = _mode;
-//   ccData.loop = _loop;
-// }
-
 function handleSelectionChange(_row: any) {
   selected.value = _row.$index;
   worker.postMessage({ sig: 'local-id-changer', data: _row.$index });
@@ -1409,10 +1395,10 @@ function BOOT() {
   } else {
     ccData.action = 'start';
   }
-  axios.post('/srv/SRV', ccData).then((res) => {
-    console.log(res);
-  });
-  // worker.postMessage({ sig: 'boot', data: ccData }); // { ccData: ccData.value });
+  // axios.post(`${url}/cc`, ccData).then((res) => {
+  //   console.log(res);
+  // });
+  worker.postMessage({ sig: 'boot', data: ccData }); // { ccData: ccData.value });
 }
 
 const ClassAAA = ref('box');
@@ -1493,7 +1479,7 @@ onMounted(() => {
   currentInstance.value = getCurrentInstance();
   worker.onmessage = (event) => {
     // module class
-    if (event.data.sig === 'status') {
+    if (event.data.sig === 'status' && event.data.data.length !== 0) {
       event.data.data.sta.forEach((arr: Array<string>) => {
         conbineStatus(arr[0], arr[1]);
         if (arr[1] === 'Running') {
@@ -1526,10 +1512,11 @@ onMounted(() => {
       // load, first send a action of 'stop'
       ccData.action = 'stop';
       ccData.mode = mode.value ? 'continous' : 'single';
-      axios.post('/srv/SRV', ccData).then((res) => {
-        console.log(res);
-      });
+      // axios.post('/srv/SRV', ccData).then((res) => {
+      //   console.log(res);
+      // });
       ccData.project_id = event.data.data;
+      worker.postMessage({ sig: 'boot', data: ccData });
       projId.value = event.data.data;
     }
   };
