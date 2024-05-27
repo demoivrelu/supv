@@ -104,7 +104,8 @@ function setLocalId(_projectId, _localId) {
   })
     .then((response) => response.json())
     .then((res) => {
-      console.log('setLocalId: ', res);
+      const t = res;
+      // console.log('setLocalId: ', res);
     })
     .catch((error) => {
       console.error('Error fetching data:', error);
@@ -141,7 +142,6 @@ async function getRunningStatus(_projectId) {
     .then((response) => response.json())
     .then((res) => {
       res.data.forEach((item) => {
-        console.log('status: ', res.data, item.id, _projectId);
         if (item.id === _projectId) {
           status = item;
         }
@@ -178,7 +178,6 @@ onmessage = (event) => {
     setLocalId(projId.value, event.data.data + 1);
   }
   if (event.data.sig === 'boot') {
-    console.log('boot:---- ', event.data.data);
     // fetch(proxyUrlBOOT, {
     //   method: 'POST',
     //   headers: {
@@ -202,7 +201,7 @@ onmessage = (event) => {
     })
       .then((response) => response.json())
       .then((res) => {
-        console.log('boot: ', res);
+        const t = res.data;
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -216,7 +215,7 @@ const mem = ref(0);
 setInterval(() => {
   if (projId.value) {
     getLocalId(projId.value).then((res) => {
-      if (res !== mem.value) {
+      if (res !== mem.value || res === 0) {
         postMessage({ sig: 'localId', data: res });
       }
       mem.value = res;

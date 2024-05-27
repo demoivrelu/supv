@@ -636,7 +636,8 @@
           ghostClass="ghost"
         >
           <el-table :data="userList" class="data-box" :disabled="disabled"
-            :cell-class-name="setClass">
+            >
+            <!-- :cell-class-name="setClass"> -->
             <el-table-column :width="'42px'">
               <template v-slot="scope">
                 <el-radio :label="scope.$index" @change="handleSelectionChange(scope)"
@@ -646,7 +647,7 @@
             </el-table-column>
             <el-table-column label="Name" prop="Instrument" :width="'95px'"/>
             <el-table-column label="CMD" prop="Command" :width="'70px'" />
-            <el-table-column label="Para" prop="Parameter" :width="'180px'">
+            <el-table-column label="Para" prop="Parameter" :width="'145px'">
               <template v-slot="scope">
                 <el-input type="textarea" :rows="3" v-model="scope.row['Parameter']"
                   :disabled="disabled"/>
@@ -659,7 +660,7 @@
                 </el-input>
               </template>
             </el-table-column>
-            <el-table-column prop="LocalPath" label="LocalPath" :width="'110px'">
+            <el-table-column prop="LocalPath" label="LocalPath" :width="'100px'">
               <template v-slot="scope">
                 <el-input type="textarea" :rows="2" v-model="scope.row['LocalPath']"
                   :disabled="disabled">
@@ -673,7 +674,7 @@
                 </el-input>
               </template>
             </el-table-column>
-            <el-table-column prop="Parallel" label="Parallel">
+            <el-table-column prop="Parallel" label="Parallel" :width="'75px'">
               <template v-slot="scope">
                 <el-switch v-model="scope.row['Parallel']" :disabled="disabled"></el-switch>
               </template>
@@ -683,7 +684,7 @@
                 <el-switch v-model="scope.row['Release']" :disabled="disabled"></el-switch>
               </template>
             </el-table-column>
-            <el-table-column label="Opt" v-slot="{ row, $index }">
+            <el-table-column label="Opt" v-slot="{ row, $index }" :width="'50px'">
               <div style="height: 10vh; display: flex; align-items: center">
                 <el-button
                   @click="deleteItem(row, $index)"
@@ -695,10 +696,15 @@
                 </el-button>
               </div>
             </el-table-column>
+            <el-table-column label="Status" v-slot="{ row, $index }">
+              <div style="height: 10vh; margin-left: 3%; display: flex; align-items: center">
+                <div :class="setTableStatus(row, $index)"></div>
+              </div>
+            </el-table-column>
           </el-table>
           <div align="right" style="margin-top: 1%">
             <el-switch v-model="mode" @change="handleSwitchChange" style="margin-right: 1%"
-              :disabled="disabled"/>
+              :disabled="disabled" v-bind:title="'Mode: ' + ccData.mode"/>
             <el-button @click="EMERGENCY()">EMERGENCY</el-button>
             <el-button @click="BOOT()">{{ actionBtn }}</el-button>
           </div>
@@ -1223,7 +1229,8 @@ function handleData(_val: any) {
     }
   });
   axios.post(`${url}/get-cc-chart`, { id: _val.id }).then((res: any) => {
-    console.log('get ccdata: ', res.data);
+    const t = res.data.data;
+    // console.log('get ccdata: ', res.data);
   });
 }
 
@@ -1267,7 +1274,8 @@ function submit() {
         // console.log(res.data);
         worker.postMessage({ sig: 'project', data: res.data.last_id });
         axios.post(`${url}/get-cc-chart`, { id: res.data.last_id }).then((re: any) => {
-          console.log('get ccdata: ', re.data);
+          const t = re;
+          // console.log('get ccdata: ', re.data);
         });
         ElMessage({
           message: 'Submit successful',
@@ -1339,7 +1347,7 @@ function EMERGENCY() {
   }).then(() => {
     tmp.CMD = 'Resume';
     worker.postMessage({ sig: 'command', data: tmp });
-    console.log(tmp);
+    // console.log(tmp);
     ElMessage.success('Resume!');
   }).catch(() => {
     tmp.CMD = 'Break';
@@ -1456,26 +1464,33 @@ function conbineStatus(inst: string, sta: string) {
   instrStatus.value[inst] = sta;
 }
 
-function setClass({
-  row, column, rowIndex, columnIndex,
-}) {
-  if (rowIndex === selected.value && instrStatus.value[row.Instrument] === 'Running') {
-    console.log('row: ', row);
-    return 'Running';
+// function setClass({
+//   row, column, rowIndex, columnIndex,
+// }) {
+//   if (rowIndex === selected.value && instrStatus.value[row.Instrument] === 'Running') {
+//     console.log('row: ', row);
+//     return 'Running';
+//   }
+//   if (rowIndex === selected.value && instrStatus.value[row.Instrument] === 'Error') {
+//     console.log('row: ', row);
+//     return 'Error';
+//   }
+// }
+
+function setTableStatus(_row: any, _index: any) {
+  if (_index === selected.value && instrStatus.value[_row.Instrument] === 'Running') {
+    return 'loader-running';
+    // return 'loader-running';
   }
-  if (rowIndex === selected.value && instrStatus.value[row.Instrument] === 'Error') {
-    console.log('row: ', row);
-    return 'Error';
+  if (_index === selected.value && instrStatus.value[_row.Instrument] === 'Error') {
+    return 'loader-error';
   }
-  // if (columnIndex === 0) {
-  //   return 'addBorder';
-  // }
 }
 
 onMounted(() => {
-  setInterval(() => {
-    console.log('current ccdata: ,,,,,', ccData);
-  }, 2000);
+  // setInterval(() => {
+  //   console.log('current ccdata: ,,,,,', ccData);
+  // }, 2000);
   currentInstance.value = getCurrentInstance();
   worker.onmessage = (event) => {
     // module class
@@ -1504,7 +1519,7 @@ onMounted(() => {
       }
     }
     // current local id
-    if (event.data.sig === 'localId' && event.data.data !== 0) {
+    if (event.data.sig === 'localId') {
       ccData.local_id = Number(event.data.data);
       selected.value = event.data.data - 1;
     }
@@ -1583,13 +1598,13 @@ onMounted(() => {
 }
 @keyframes blink-green {
   0% {
-    background-color: rgb(201, 245, 230);
+    background-color: #e7f3dd;
   }
   50% {
-    background-color: rgb(7, 221, 150);
+    background-color: #85d345;
   }
   100% {
-    background-color: rgb(201, 245, 230);
+    background-color: #e7f3dd;
   }
 }
 
@@ -1598,7 +1613,104 @@ onMounted(() => {
 }
 
 .Error{
-  background-color: rgb(255, 89, 89);
+  background-color: #fa7959;
+}
+
+/* @keyframes boxShadowOffset3 {
+    0% {
+        box-shadow: 14px 0 0 -2px, 38px 0 0 -2px, -14px 0 0 -2px, -38px 0 0 -2px;
+    }
+    25% {
+        box-shadow: 14px 0 0 -2px, 38px 0 0 -2px, -14px 0 0 -2px, -38px 0 0 2px;
+    }
+    50% {
+        box-shadow: 14px 0 0 -2px, 38px 0 0 -2px, -14px 0 0 2px, -38px 0 0 -2px;
+    }
+    75% {
+        box-shadow: 14px 0 0 2px, 38px 0 0 -2px, -14px 0 0 -2px, -38px 0 0 -2px;
+    }
+    100% {
+        box-shadow: 14px 0 0 -2px, 38px 0 0 2px, -14px 0 0 -2px, -38px 0 0 -2px;
+    }
+}
+
+.loader-running {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    color: #90cf5b;
+    -webkit-animation: boxShadowOffset3 2s linear infinite;
+    animation: boxShadowOffset3 2s linear infinite;
+}
+
+.loader-error {
+    position: relative;
+    margin-left: 2%;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    color: #ff4747;
+    -webkit-animation: boxShadowOffset3 2s linear infinite;
+    animation: boxShadowOffset3 2s linear infinite;
+} */
+
+@keyframes animloader38-1 {
+  0% {
+    transform:translateX(-100%) scale(0);
+  }
+  50% {
+      transform:translateX(0%) scale(1);
+  }
+  100% {
+      transform:translateX(100%) scale(0);
+  }
+}
+
+.loader-running {
+  position: relative;
+  width: 18px;
+  height: 18px;
+}
+
+.loader-running::before, .loader-running::after {
+  content:'';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 70%;
+  border-radius: 50%;
+  background-color: #85d345;
+  transform:scale(0);
+  animation:animloader38-1 0.8s infinite ease-in-out;
+}
+
+.loader-running::after {
+  animation-delay:0.4s;
+}
+
+.loader-error {
+  position: relative;
+  width: 18px;
+  height: 18px;
+}
+
+.loader-error::before, .loader-error::after {
+  content:'';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 70%;
+  border-radius: 50%;
+  background-color: #fa7959;
+  transform:scale(0);
+  animation:animloader38-1 0.8s infinite ease-in-out;
+}
+
+.loader-error::after {
+  animation-delay:0.4s;
 }
 
 .para-box{
