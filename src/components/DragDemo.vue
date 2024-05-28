@@ -65,7 +65,7 @@
             </template>
           </el-dialog>
 
-        <el-row style="margin-top: 10%;">
+        <el-row style="margin-top: 3.5%;">
           <VueDraggable
             v-model="AAA"
             animation="150"
@@ -621,12 +621,34 @@
 
         </el-tabs>
       </div>
+
       <div class="sub_gap"></div>
+
       <div class="sub4">
-        <div style="margin-top: 2%; margin-bottom: -4%;" align="right">
-          Loop:
-          <el-input-number v-model="loopNum" @change="handleLoopChange" min="0"
-            :disabled="disabled"/>
+        <el-row style="margin-top: 2%; margin-bottom: -4%;">
+          <el-col :span="12">
+            <div align="left">
+              <el-button class="btn" @click="disp = false">
+                <i class="iconfont icon-table icon-class"></i>
+              </el-button>
+              <el-button class="btn" @click="disp = true">
+                <i class="iconfont icon-code icon-class"></i>
+              </el-button>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div align="right" v-if="!disp">
+              Loop:
+              <el-input-number v-model="loopNum" @change="handleLoopChange" min="0"
+                :disabled="disabled"/>
+            </div>
+          </el-col>
+        </el-row>
+        <div class="data-box" style="margin-top: 5%" v-if="disp" align="left">
+          <el-scrollbar style="height: 74vh">
+            <json-viewer :value="userList" :expand-depth=3 copyable
+              style="margin-top: 1%; margin-left: 2%; width: 95%"/>
+          </el-scrollbar>
         </div>
         <VueDraggable
           target="tbody"
@@ -634,11 +656,11 @@
           :animation="150"
           group="people"
           ghostClass="ghost"
+          v-if="!disp"
         >
           <el-table :data="userList" class="data-box" :disabled="disabled"
             >
-            <!-- :cell-class-name="setClass"> -->
-            <el-table-column :width="'42px'">
+            <el-table-column :width="'49px'">
               <template v-slot="scope">
                 <el-radio :label="scope.$index" @change="handleSelectionChange(scope)"
                   v-model="selected" :disabled="disabled">
@@ -647,7 +669,7 @@
             </el-table-column>
             <el-table-column label="Name" prop="Instrument" :width="'95px'"/>
             <el-table-column label="CMD" prop="Command" :width="'70px'" />
-            <el-table-column label="Para" prop="Parameter" :width="'145px'">
+            <el-table-column label="Para" prop="Parameter" :width="'135px'">
               <template v-slot="scope">
                 <el-input type="textarea" :rows="3" v-model="scope.row['Parameter']"
                   :disabled="disabled"/>
@@ -708,7 +730,6 @@
             <el-button @click="EMERGENCY()">EMERGENCY</el-button>
             <el-button @click="BOOT()">{{ actionBtn }}</el-button>
           </div>
-          <!-- {{ userList }} -->
         </VueDraggable>
       </div>
     </div>
@@ -735,6 +756,8 @@ import * as XLSX from 'xlsx';
 const worker = new Worker(new URL('./Utils/worker.js', import.meta.url));
 
 const url = 'http://192.168.1.33:81/main-page';
+
+const disp = ref(false);
 
 const dialogHelpVisible = ref(false);
 const userDataLoading = ref(false);
@@ -1539,6 +1562,7 @@ onMounted(() => {
 </script>
 
 <style>
+@import url(../assets/font_viut27d3a7/iconfont.css);
 .el-table .el-table__row,
 .el-table .el-table__header {
   border-bottom: 1px solid #d3dce6;
@@ -1715,7 +1739,7 @@ onMounted(() => {
 
 .para-box{
   margin-top: 4%;
-  height: 51vh;
+  height: 52vh;
   /* border: 1px solid; */
   border: solid 1px #ccc;
   border-radius: 10px;
@@ -1724,12 +1748,23 @@ onMounted(() => {
 
 .data-box{
   border: solid 1px #ccc; border-radius: 10px; margin-top: 5%;
-  height: 73vh;
+  height: 74vh;
   box-shadow: 1px 1px 6px #888888;
 }
 
 .box .title{
   font-size: 14px; font-weight: 600;
+}
+
+.btn{
+  border-radius: 8px;
+  width: 10%;
+  box-shadow: 1px 1px 5px #888888;
+}
+
+.icon-class{
+  margin-left: -1.2%;
+  font-size:x-large;
 }
 
 .el-button{

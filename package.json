@@ -1,5 +1,5 @@
 {
-  "name": "tmp",
+  "name": "module-manager",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -17,9 +17,12 @@
     "core-js": "^3.8.3",
     "dagre": "^0.8.5",
     "element-plus": "^2.7.2",
+    "express": "^4.19.2",
+    "mysql": "^2.18.1",
     "regenerator-runtime": "^0.14.1",
     "vue": "^3.2.13",
     "vue-draggable-plus": "^0.4.0",
+    "vue-json-viewer": "^3.0.4",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0",
     "xlsx": "^0.18.5"

@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import ElementPlus from 'element-plus';
 // import * as Icons from '@element-plus/icons-vue';
+import JsonViewer from 'vue-json-viewer';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import App from './App.vue';
 import router from './router';
@@ -11,7 +12,7 @@ import '@/assets/fonts/font_nfoc9cg8dl/iconfont.css';
 const app = createApp(App);
 app.config.globalProperties.$router = router;
 
-app.use(router).use(ElementPlus).mount('#app');
+app.use(router).use(ElementPlus).use(JsonViewer).mount('#app');
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }
