@@ -1,6 +1,6 @@
 @font-face {
   font-family: "iconfont"; /* Project id  */
-  src: url('iconfont.ttf?t=1717042400503') format('truetype');
+  src: url('iconfont.ttf?t=1717059394300') format('truetype');
 }
 
 .iconfont {
@@ -37,6 +37,10 @@
 
 .icon-dropper:before {
   content: "\e88c";
+}
+
+.icon-bx-sidebar:before {
+  content: "\e674";
 }
 
 .icon-gaofenzijigongnengcailiaozhuanyezu:before {
@@ -145,10 +149,6 @@
 
 .icon-honor:before {
   content: "\e859";
-}
-
-.icon-pcm:before {
-  content: "\e85f";
 }
 
 .icon-ranking-list:before {

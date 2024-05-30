@@ -1,71 +1,83 @@
 <template>
   <div align="center">
-    <div align='right' style="margin-right: 12.5%; margin-top: 1%;">
-      <el-button plain @click="submit()" :disabled="disabled">
-        <el-icon><Upload/></el-icon>
-      </el-button>
-      <el-button plain @click="getUserData()" :disabled="disabled">
-        <el-icon><folder-opened /></el-icon>
-      </el-button>
-      <el-button plain @click="exportExcel()" >
-        <el-icon><download /></el-icon>
-      </el-button>
-      <el-button plain @click="dialogHelpVisible = true" >Help</el-button>
-    </div>
-    <div class="content"
-      style="border-radius: 20px; height: 88vh; width: 80%; margin-top: 2vh;">
-      <div class="sub1"></div>
-      <div class="sub3">
-        <el-dialog custom-class="help-dialog" :top="'80px'" :title="'Help'" align="left"
-          v-model="dialogHelpVisible">
-          <div>
-            1. Configue each instrument with the corresponding command and parameter. <br><br>
-            2. Drag the instrument module to the progress table.<br><br>
-            3. The table will be displayed at right side.<br><br>
-            4. Sequence of the progress you build could be dragged at your will in the table.<br>
-            <br>
-            5. The data could be download as an excel file when "Download" button pressed.<br><br>
-            6. The data could be imported from database when "Import" button pressed.<br><br>
-            7. The data could be uploaded when "Upload" button pressed.<br><br>
-            8. Parameter of each instrument displayed is default.<br><br>
-            9. If you want to run a table progress, please open an exist progress
-            in database or upload a new one.
-          </div>
-        </el-dialog>
-          <el-dialog :modal-append-to-body="false"
-            :title="'load'" v-model="dialogTableVisible">
-            <el-table v-loading="userDataLoading" style="height:550px"
-              :data="userData.slice((currentpage - 1) * pagesize, currentpage * pagesize)"
-              highlight-current-row >
-              <el-table-column property="id" :label="'ID'" width="64" />
-              <el-table-column property="order_name" :label="'Name'" width="200" />
-              <el-table-column property="status" :label="'Status'" width="120"/>
-              <el-table-column property="type" :label="'Type'" width="150"/>
-              <el-table-column property="name" :label="'Owner'" width="100"/>
-              <el-table-column property="create_time" :label="'Create Time'" width="200"/>
-              <el-table-column width="80">
-                <template v-slot="scope">
-                  <el-button @click="loadAll(scope.row)">
-                    <el-icon>
-                      <document />
-                    </el-icon>
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <template v-slot:footer>
-              <div>
-                <el-pagination class="custom-pagination" style="float:center;"
-                  background layout="prev, pager, next"
-                  :total="total" @current-change="currentChange">
-                </el-pagination>
-              </div>
-              <div style="margin-top: 20px;">
-              </div>
-            </template>
-          </el-dialog>
+    <el-row>
+      <el-col :span="12" align='left'>
+        <el-button @click="func()" style="margin-left:24%;margin-top:1%; width:7.5%">
+          <i class="iconfont icon-bx-sidebar icon-class"></i>
+        </el-button>
+      </el-col>
+      <el-col :span="12">
+        <div align='right' style="margin-right: 25%; margin-top: 1%;">
+          <el-button plain @click="submit()" :disabled="disabled">
+            <el-icon><Upload/></el-icon>
+          </el-button>
+          <el-button plain @click="getUserData()" :disabled="disabled">
+            <el-icon><folder-opened /></el-icon>
+          </el-button>
+          <el-button plain @click="exportExcel()" >
+            <el-icon><download /></el-icon>
+          </el-button>
+          <el-button plain @click="dialogHelpVisible = true" >Help</el-button>
+        </div>
+      </el-col>
+    </el-row>
 
-        <el-row style="margin-top: 3.5%;">
+    <el-dialog custom-class="help-dialog" :top="'80px'" :title="'Help'" align="left"
+      v-model="dialogHelpVisible">
+      <div>
+        1. Configue each instrument with the corresponding command and parameter. <br><br>
+        2. Drag the instrument module to the progress table.<br><br>
+        3. The table will be displayed at right side.<br><br>
+        4. Sequence of the progress you build could be dragged at your will in the table.<br>
+        <br>
+        5. The data could be download as an excel file when "Download" button pressed.<br><br>
+        6. The data could be imported from database when "Import" button pressed.<br><br>
+        7. The data could be uploaded when "Upload" button pressed.<br><br>
+        8. Parameter of each instrument displayed is default.<br><br>
+        9. If you want to run a table progress, please open an exist progress
+        in database or upload a new one.
+      </div>
+    </el-dialog>
+    <el-dialog :modal-append-to-body="false"
+      :title="'load'" v-model="dialogTableVisible">
+      <el-table v-loading="userDataLoading" style="height:550px"
+        :data="userData.slice((currentpage - 1) * pagesize, currentpage * pagesize)"
+        highlight-current-row >
+        <el-table-column property="id" :label="'ID'" width="64" />
+        <el-table-column property="order_name" :label="'Name'" width="200" />
+        <el-table-column property="status" :label="'Status'" width="120"/>
+        <el-table-column property="type" :label="'Type'" width="150"/>
+        <el-table-column property="name" :label="'Owner'" width="100"/>
+        <el-table-column property="create_time" :label="'Create Time'" width="200"/>
+        <el-table-column width="80">
+          <template v-slot="scope">
+            <el-button @click="loadAll(scope.row)">
+              <el-icon>
+                <document />
+              </el-icon>
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <template v-slot:footer>
+        <div>
+          <el-pagination class="custom-pagination" style="float:center;"
+            background layout="prev, pager, next"
+            :total="total" @current-change="currentChange">
+          </el-pagination>
+        </div>
+        <div style="margin-top: 20px;">
+        </div>
+      </template>
+    </el-dialog>
+
+    <div class="content"
+      style="border-radius: 20px; height: 89vh; width: 80%; margin-top: 2vh;">
+      <div class="sub1"></div>
+      <div class="sub3" id="sub3">
+        <div >
+        </div>
+        <el-row style="margin-top: 3.5%;" id="module">
           <VueDraggable
             v-model="AAA"
             animation="150"
@@ -221,6 +233,7 @@
         </el-row>
 
         <el-tabs
+          id="module-para"
           v-model="activeName"
           ref="tabs"
           class="hide-tabs-header para-box"
@@ -624,7 +637,7 @@
 
       <div class="sub_gap"></div>
 
-      <div class="sub4">
+      <div class="sub4" id="sub4">
         <el-row style="margin-top: 2%; margin-bottom: -4%;">
           <el-col :span="12">
             <div align="left">
@@ -1629,10 +1642,48 @@ onMounted(() => {
     }
   };
 });
+
+const toggleVal = ref(false);
+
+function func() {
+  console.log('click');
+  if (toggleVal.value) {
+    toggleVal.value = false;
+    document.getElementById('sub4').style.animation = 'shrink 0.5s';
+    document.getElementById('sub4').style.animationFillMode = 'forwards';
+    document.getElementById('sub3').style.display = '';
+  } else {
+    document.getElementById('sub4').style.animation = 'expand 0.5s';
+    document.getElementById('sub4').style.animationFillMode = 'forwards';
+    document.getElementById('sub3').style.display = 'none';
+    toggleVal.value = true;
+  }
+}
 </script>
 
 <style>
 @import url(../assets/font_nfoc9cg8dl/iconfont.css);
+@keyframes shrink {
+  from {
+    width: 75%;
+    margin-left: 2%;
+  }
+  to {
+    width: 49%;
+    margin-left: 28%;
+  }
+}
+@keyframes expand {
+  from {
+    width: 49%;
+    margin-left: 28%;
+  }
+  to {
+    width: 75%;
+    margin-left: 2%;
+  }
+}
+
 .el-table .el-table__row,
 .el-table .el-table__header {
   border-bottom: 1px solid #d3dce6;
@@ -1658,6 +1709,7 @@ onMounted(() => {
 } */
 
 .content .sub3 {
+  margin-left: -0.5%;
   width: 30%;
 }
 .content .sub_gap {
@@ -1665,7 +1717,15 @@ onMounted(() => {
 }
 
 .content .sub4 {
-  width: 61%;
+  position: absolute;
+  width: 49%;
+  margin-left: 28%;
+  background-color: white;
+  opacity: 1;
+}
+
+.content .shrink{
+  animation: expand 2s linear;
 }
 
 .hide-tabs-header .el-tabs__header {
