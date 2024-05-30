@@ -8,11 +8,11 @@ import IconIcon from './IconIcon.vue';
 import ProcessNode from './ProcessNode.vue';
 import AnimationEdge from './AnimationEdge.vue';
 
-// import { initialEdges, initialNodes } from './initial-elements';
+import { initialEdges, initialNodes } from './initial-elements';
 import { useRunProcess } from './useRunProcess';
-// import { useShuffle } from './useShuffle';
+import { useShuffle } from './useShuffle';
 import { useLayout } from './useLayout';
-// import Sidebar from '../Flow/SideBar.vue';
+import Sidebar from '../Flow/SideBar.vue';
 import useDragAndDrop from '../Flow/useDnD';
 // import DropzoneBackground from '../Flow/DropzoneBackground.vue';
 
@@ -23,19 +23,13 @@ const {
   onDragOver, onDrop, onDragLeave, addSingleNode,
 } = useDragAndDrop();
 const { onConnect, addEdges } = useVueFlow();
-// const edgeID = ref('e1-2');
-// const nodeID = ref(0);
+const edgeID = ref('e1-2');
+const nodeID = ref(0);
 const anim = ref(null);
 const proc = ref(null);
-let nodes = ref([]);
-let edges = ref([]);
-let importedNodes = localStorage.getItem('nodes');
-let importedEdges = localStorage.getItem('edges');
 
-nodes = ref(importedNodes ? JSON.parse(importedNodes) : []);
-edges = ref(importedEdges ? JSON.parse(importedEdges) : []);
-// const nodes = ref(initialNodes);
-// const edges = ref(initialEdges);
+const nodes = ref(initialNodes);
+const edges = ref(initialEdges);
 onConnect((params) => {
   console.log('$$$params', params);
   const edge = {
@@ -53,15 +47,11 @@ onConnect((params) => {
   console.log(edges);
 });
 const cancelOnError = ref(true);
-// const shuffle = useShuffle();
-const { graph, layout } = useLayout();
-// const { graph, layout, previousDirection } = useLayout();
+const shuffle = useShuffle();
+const { graph, layout, previousDirection } = useLayout();
 const {
-  stop, reset, isRunning, singleRunNode, finished,
+  run, stop, reset, isRunning, singleRunNode,
 } = useRunProcess({ graph, cancelOnError });
-// const {
-//   run, stop, reset, isRunning, singleRunNode, finished,
-// } = useRunProcess({ graph, cancelOnError });
 const { fitView } = useVueFlow();
 async function layoutGraph(direction) {
   await stop();
@@ -72,66 +62,35 @@ async function layoutGraph(direction) {
   });
 }
 
-// async function shuffleGraph() {
-//   await stop();
-//   reset(nodes.value);
-//   edges.value = shuffle(nodes.value);
-//   nextTick(() => {
-//     layoutGraph(previousDirection.value);
-//   });
-// }
+async function shuffleGraph() {
+  await stop();
+  reset(nodes.value);
+  edges.value = shuffle(nodes.value);
+  nextTick(() => {
+    layoutGraph(previousDirection.value);
+  });
+}
 
 async function edgeRun(_val) {
   await anim.value.setNode(_val);
   anim.value.singleRun();
 }
 
-async function allPreDone() {
-  // const status = localStorage.getItem('status');
-  const localId = localStorage.getItem('localId');
-  for (let i = 0; i < nodes.value.length; i += 1) {
-    if (nodes.value[i].origin < JSON.parse(localId).id) {
-      finished(nodes.value[i], false);
-    }
-  }
-}
-
-async function detectStatus() {
-  const localId = JSON.parse(localStorage.getItem('localId'));
-  // const status = localStorage.getItem('status');
-  for (let index = 0; index < edges.value.length; index += 1) {
-    const element = edges.value[index];
-    if (Object.prototype.hasOwnProperty.call(element, 'origin')
-      && element.origin === localId.id && localId.instrument === 'Robot1' && localId.status === 'Running') {
-      edgeRun(element.id);
-    }
-  }
-  for (let i = 0; i < nodes.value.length; i += 1) {
-    if (nodes.value[i].origin === localId.id && localId.status === 'Running') {
-      singleRunNode(nodes.value[i], false);
-    }
-  }
-}
-
 onMounted(() => {
   layoutGraph('LR');
-  allPreDone();
+  console.log(AnimationEdge);
   setInterval(() => {
-    importedNodes = localStorage.getItem('nodes');
-    importedEdges = localStorage.getItem('edges');
-    nodes = ref(importedNodes ? JSON.parse(importedNodes) : []);
-    edges = ref(importedEdges ? JSON.parse(importedEdges) : []);
-    detectStatus();
-    allPreDone();
     // proc.value.read();
-  }, 4000);
+    console.log(nodes, edges);
+    // console.log('procdata !!!!!!!!!!', proc.value);
+  }, 2000);
 });
 defineExpose({ nodes });
 </script>
 
 <template>
   <div class="layout-flow" @drop="onDrop(nodes, edges), addSingleNode(nodes)">
-    <!-- <el-row>
+    <el-row>
       run edge
       <el-button @click="edgeRun(edgeID)">edge</el-button>
       <el-input v-model="edgeID" style="width:200px"></el-input>
@@ -141,7 +100,7 @@ defineExpose({ nodes });
       <el-button @click="singleRunNode(nodes[nodeID], false)">node</el-button>
       <el-input v-model="nodeID" style="width:200px"></el-input>
     </el-row>
-        <Sidebar /> -->
+        <Sidebar />
 
     <VueFlow
       @dragover="onDragOver" @dragleave="onDragLeave(nodes)"
@@ -178,21 +137,21 @@ defineExpose({ nodes });
             <IconIcon name="stop" />
             <span class="spinner" />
           </button>
-          <!-- <button v-else title="start" @click="run(nodes)">
+          <button v-else title="start" @click="run(nodes)">
             <IconIcon name="play" />
-          </button> -->
+          </button>
 
           <button title="set horizontal layout" @click="layoutGraph('LR')">
             <IconIcon name="horizontal" />
           </button>
-<!--
+
           <button title="set vertical layout" @click="layoutGraph('TB')">
             <IconIcon name="vertical" />
           </button>
 
           <button title="shuffle graph" @click="shuffleGraph">
             <IconIcon name="shuffle" />
-          </button> -->
+          </button>
         </div>
         <div class="checkbox-panel">
           <!-- <label for="inp">Cancel on error</label>
@@ -205,7 +164,7 @@ defineExpose({ nodes });
 
 <style>
 .layout-flow {
-  background-color: #f0f0f0;
+  background-color: #d7d5ef;
   height: 100%;
   width: 100%;
 }

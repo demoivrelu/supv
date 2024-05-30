@@ -38,7 +38,6 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
   }
 
   function clear() {
-    console.log('....3', isRunning);
     isRunning.value = false;
     executedNodes.clear();
     runningTasks.clear();
@@ -48,7 +47,6 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
     clear();
 
     for (const node of nodes) {
-      console.log('...4', isRunning);
       updateNodeData(node.id, {
         isRunning: false,
         isFinished: false,
@@ -214,9 +212,9 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
             }
           }
 
-          updateNodeData(node.id, { isRunning: false, isFinished: true });
+          // updateNodeData(node.id, { isRunning: false, isFinished: true });
 
-          runningTasks.delete(node.id);
+          // runningTasks.delete(node.id);
           // console.log('..........children', children);
           // if (children.length > 0) {
           //   // run the process on the children in parallel
@@ -231,6 +229,24 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
       );
 
       // save the timeout so we can cancel it if needed
+      runningTasks.set(node.id, timeout);
+    });
+  }
+
+  async function finished(node) {
+    upcomingTasks.add(node.id);
+    upcomingTasks.clear();
+    executedNodes.add(node.id);
+    const delay = 0;
+    return new Promise((resolve) => {
+      const timeout = setTimeout(
+        async () => {
+          updateNodeData(node.id, { isRunning: false, isFinished: true });
+          runningTasks.delete(node.id);
+          resolve();
+        },
+        delay,
+      );
       runningTasks.set(node.id, timeout);
     });
   }
@@ -290,6 +306,6 @@ export function useRunProcess({ graph: dagreGraph, cancelOnError = true }) {
   }
 
   return {
-    run, stop, reset, isRunning, runNode, singleRunNode,
+    run, stop, reset, isRunning, runNode, singleRunNode, finished,
   };
 }

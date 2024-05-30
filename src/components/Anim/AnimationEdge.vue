@@ -1,5 +1,5 @@
 <script setup>
-import arm from '@/assets/img/arm.png';
+import arm from '@/assets/img/robot1.png';
 import {
   computed, nextTick, ref, toRef, watch, defineProps, defineExpose,
 } from 'vue';
@@ -62,8 +62,8 @@ const edgeRef = ref();
 const labelPosition = ref({ x: 0, y: 0 });
 const currentLength = ref(0);
 const targetNodeData = toRef(() => nodesData.value[0].data);
-const sourceNodeData = toRef(() => nodesData.value[1].data);
-const isFinished = toRef(() => sourceNodeData.value.isFinished);
+// const sourceNodeData = toRef(() => nodesData.value[1].data);
+// const isFinished = toRef(() => sourceNodeData.value.isFinished);
 const isCancelled = toRef(() => targetNodeData.value.isCancelled);
 const isAnimating = ref(false);
 const edgeColor = toRef(() => {
@@ -117,7 +117,6 @@ watch(edgePoint, (point) => {
   }
   labelPosition.value = pathEl.getPointAtLength(point);
 });
-console.log('isfinish: ', isFinished);
 // if simulate hole progress open this
 // watch(isFinished, (isFinished) => {
 //   console.log('isfinish: ', isFinished);
@@ -180,7 +179,7 @@ async function singleRun() {
     duration: Math.max(5000, totalLength / 2),
     abort: () => !isAnimating.value,
   });
-  reset();
+  // reset();
 }
 
 function runAnim() {
@@ -250,6 +249,6 @@ export default {
 }
 
 .el-img{
-  transform:scale(0.3)
+  transform:scale(0.06)
 }
 </style>

@@ -1,6 +1,14 @@
 <script setup>
 import { toRef, defineExpose } from 'vue';
+// import { toRef, defineExpose, onMounted } from 'vue';
 import { Handle, useHandleConnections } from '@vue-flow/core';
+import unchained from '@/assets/img/unchained.png';
+import robot1 from '@/assets/img/robot1.png';
+import cytation1 from '@/assets/img/cytation1.png';
+import thermo from '@/assets/img/thermo.png';
+import hamilton from '@/assets/img/hamilton.png';
+import discover from '@/assets/img/discover.png';
+import gc from '@/assets/img/gc.png';
 
 const props = defineProps({
   data: {
@@ -63,6 +71,19 @@ const processLabel = toRef(() => {
 
 function read() {
   console.log('#####', props.data, isReceiver, isSender);
+  console.log(processLabel.value);
+}
+function chooseInstr() {
+  switch (props.data.Instrument) {
+    case 'Unchained': return unchained;
+    case 'Cytation': return cytation1;
+    case 'Hamilton': return hamilton;
+    case 'Thermo': return thermo;
+    case 'GC': return gc;
+    case 'Discover': return discover;
+    case 'Robot1': return robot1;
+    default: return '';
+  }
 }
 defineExpose({
   read,
@@ -96,7 +117,9 @@ defineExpose({
     <!-- <div v-if="!isSender && data.isRunning" class="spinner" /> -->
     <div v-if="data.isRunning" class="spinner" />
     <span v-else>
-      {{ processLabel }}
+      <el-image :src='chooseInstr()' class="el-img"></el-image>
+
+      <!-- {{ processLabel }} -->
     </span>
   </div>
 </template>
@@ -105,8 +128,8 @@ defineExpose({
 .process-node {
   padding: 10px;
   border-radius: 99px;
-  width: 24px;
-  height: 24px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,5 +141,8 @@ defineExpose({
   width: unset;
   background: transparent;
   font-size: 12px;
+}
+.el-img{
+  transform: scale(1);
 }
 </style>

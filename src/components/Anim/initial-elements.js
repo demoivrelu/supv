@@ -11,13 +11,13 @@ const edgeType = 'animation';
 //   hidden: false,
 // };
 
-console.log(logo);
-
 export const initialNodes = [
   {
     id: '0',
     position,
     type: nodeType,
+    data: {
+    },
     // style: defaultNodeStyle,
     // image: '../../assets/img/arm.jpg',
     // backgroundImage: logo,
@@ -56,7 +56,7 @@ export const initialNodes = [
 
 export const initialEdges = [
   {
-    id: 'e0-1', source: '0', target: '1', type: edgeType, animated: true,
+    id: 'e0-1', source: '0', target: '1', type: edgeType, animated: true, uid: 0,
   },
   {
     id: 'e1-2', source: '1', target: '2', type: edgeType, animated: true,

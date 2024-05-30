@@ -1,0 +1,359 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5071438",
+      "name": "分子生物学平台-灰",
+      "font_class": "fenzishengwuxuepingtai-hui",
+      "unicode": "e510",
+      "unicode_decimal": 58640
+    },
+    {
+      "icon_id": "6966742",
+      "name": "More_3px",
+      "font_class": "More_px",
+      "unicode": "e6aa",
+      "unicode_decimal": 59050
+    },
+    {
+      "icon_id": "11629528",
+      "name": "分子",
+      "font_class": "fenzi",
+      "unicode": "e790",
+      "unicode_decimal": 59280
+    },
+    {
+      "icon_id": "12880822",
+      "name": "logout",
+      "font_class": "logout",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    },
+    {
+      "icon_id": "14295958",
+      "name": "plate",
+      "font_class": "plate",
+      "unicode": "e5a2",
+      "unicode_decimal": 58786
+    },
+    {
+      "icon_id": "17468253",
+      "name": "分子衍生",
+      "font_class": "fenziyansheng",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "18165389",
+      "name": "滴管,实验,化学",
+      "font_class": "dropper",
+      "unicode": "e88c",
+      "unicode_decimal": 59532
+    },
+    {
+      "icon_id": "21524358",
+      "name": "高分子及功能材料专业组",
+      "font_class": "gaofenzijigongnengcailiaozhuanyezu",
+      "unicode": "e6ab",
+      "unicode_decimal": 59051
+    },
+    {
+      "icon_id": "22054365",
+      "name": "分子机理",
+      "font_class": "fenzijili",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "31107797",
+      "name": "分子-copy",
+      "font_class": "fenzi1",
+      "unicode": "e513",
+      "unicode_decimal": 58643
+    },
+    {
+      "icon_id": "32129166",
+      "name": "flow-chart",
+      "font_class": "flow-chart",
+      "unicode": "e868",
+      "unicode_decimal": 59496
+    },
+    {
+      "icon_id": "33131659",
+      "name": "icons8-flow_chart",
+      "font_class": "icons8-flow_chart",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "34106501",
+      "name": "分子式",
+      "font_class": "fenzishi",
+      "unicode": "e7fa",
+      "unicode_decimal": 59386
+    },
+    {
+      "icon_id": "34299043",
+      "name": "百川权益大盘",
+      "font_class": "biaoqianlan_quanyi",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "34452779",
+      "name": "business-icon-sales-center",
+      "font_class": "business-icon-sales-center",
+      "unicode": "e824",
+      "unicode_decimal": 59428
+    },
+    {
+      "icon_id": "34452790",
+      "name": "catalog-check",
+      "font_class": "catalog-check",
+      "unicode": "e826",
+      "unicode_decimal": 59430
+    },
+    {
+      "icon_id": "34452798",
+      "name": "catalog",
+      "font_class": "catalog",
+      "unicode": "e827",
+      "unicode_decimal": 59431
+    },
+    {
+      "icon_id": "34452835",
+      "name": "editor-filling",
+      "font_class": "editor-filling",
+      "unicode": "e82a",
+      "unicode_decimal": 59434
+    },
+    {
+      "icon_id": "34452924",
+      "name": "order-success",
+      "font_class": "order-success",
+      "unicode": "e833",
+      "unicode_decimal": 59443
+    },
+    {
+      "icon_id": "34452948",
+      "name": "product-list",
+      "font_class": "product-list",
+      "unicode": "e834",
+      "unicode_decimal": 59444
+    },
+    {
+      "icon_id": "34452984",
+      "name": "confirm",
+      "font_class": "confirm",
+      "unicode": "e83a",
+      "unicode_decimal": 59450
+    },
+    {
+      "icon_id": "34452998",
+      "name": "gallery",
+      "font_class": "gallery",
+      "unicode": "e83b",
+      "unicode_decimal": 59451
+    },
+    {
+      "icon_id": "34453006",
+      "name": "list",
+      "font_class": "list",
+      "unicode": "e83d",
+      "unicode_decimal": 59453
+    },
+    {
+      "icon_id": "34453085",
+      "name": "zoom-in",
+      "font_class": "zoom-in",
+      "unicode": "e849",
+      "unicode_decimal": 59465
+    },
+    {
+      "icon_id": "34453163",
+      "name": "address-book",
+      "font_class": "address-book",
+      "unicode": "e84a",
+      "unicode_decimal": 59466
+    },
+    {
+      "icon_id": "34453169",
+      "name": "camera",
+      "font_class": "camera",
+      "unicode": "e84c",
+      "unicode_decimal": 59468
+    },
+    {
+      "icon_id": "34453176",
+      "name": "code",
+      "font_class": "code",
+      "unicode": "e84f",
+      "unicode_decimal": 59471
+    },
+    {
+      "icon_id": "34453183",
+      "name": "connections",
+      "font_class": "connections",
+      "unicode": "e850",
+      "unicode_decimal": 59472
+    },
+    {
+      "icon_id": "34453194",
+      "name": "customization-fill",
+      "font_class": "customization-fill",
+      "unicode": "e852",
+      "unicode_decimal": 59474
+    },
+    {
+      "icon_id": "34453195",
+      "name": "customization",
+      "font_class": "customization",
+      "unicode": "e853",
+      "unicode_decimal": 59475
+    },
+    {
+      "icon_id": "34453201",
+      "name": "double-censorship",
+      "font_class": "double-censorship",
+      "unicode": "e855",
+      "unicode_decimal": 59477
+    },
+    {
+      "icon_id": "34453214",
+      "name": "guide",
+      "font_class": "guide",
+      "unicode": "e857",
+      "unicode_decimal": 59479
+    },
+    {
+      "icon_id": "34453216",
+      "name": "home",
+      "font_class": "home",
+      "unicode": "e858",
+      "unicode_decimal": 59480
+    },
+    {
+      "icon_id": "34453221",
+      "name": "honor",
+      "font_class": "honor",
+      "unicode": "e859",
+      "unicode_decimal": 59481
+    },
+    {
+      "icon_id": "34453241",
+      "name": "pcm",
+      "font_class": "pcm",
+      "unicode": "e85f",
+      "unicode_decimal": 59487
+    },
+    {
+      "icon_id": "34453269",
+      "name": "ranking-list",
+      "font_class": "ranking-list",
+      "unicode": "e865",
+      "unicode_decimal": 59493
+    },
+    {
+      "icon_id": "34453288",
+      "name": "table-fill",
+      "font_class": "table-fill",
+      "unicode": "e86c",
+      "unicode_decimal": 59500
+    },
+    {
+      "icon_id": "34453289",
+      "name": "table",
+      "font_class": "table",
+      "unicode": "e86d",
+      "unicode_decimal": 59501
+    },
+    {
+      "icon_id": "34453291",
+      "name": "teaching",
+      "font_class": "teaching",
+      "unicode": "e86e",
+      "unicode_decimal": 59502
+    },
+    {
+      "icon_id": "34453297",
+      "name": "template-success",
+      "font_class": "template-success",
+      "unicode": "e86f",
+      "unicode_decimal": 59503
+    },
+    {
+      "icon_id": "34453308",
+      "name": "video-fill",
+      "font_class": "video-fill",
+      "unicode": "e871",
+      "unicode_decimal": 59505
+    },
+    {
+      "icon_id": "34453309",
+      "name": "video",
+      "font_class": "video",
+      "unicode": "e872",
+      "unicode_decimal": 59506
+    },
+    {
+      "icon_id": "34453337",
+      "name": "3D会场",
+      "font_class": "a-3Dhuichang",
+      "unicode": "e876",
+      "unicode_decimal": 59510
+    },
+    {
+      "icon_id": "34453364",
+      "name": "搜索排序",
+      "font_class": "sousuopaixu",
+      "unicode": "e87f",
+      "unicode_decimal": 59519
+    },
+    {
+      "icon_id": "34700822",
+      "name": "整板",
+      "font_class": "zhengban",
+      "unicode": "e76b",
+      "unicode_decimal": 59243
+    },
+    {
+      "icon_id": "34833216",
+      "name": "孔板",
+      "font_class": "kongban",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "35783992",
+      "name": "molecular",
+      "font_class": "molecular",
+      "unicode": "e738",
+      "unicode_decimal": 59192
+    },
+    {
+      "icon_id": "36209392",
+      "name": "send-fill",
+      "font_class": "send-fill",
+      "unicode": "e888",
+      "unicode_decimal": 59528
+    },
+    {
+      "icon_id": "37266779",
+      "name": "ChatGPT-copy",
+      "font_class": "ChatGPT-blue",
+      "unicode": "e501",
+      "unicode_decimal": 58625
+    },
+    {
+      "icon_id": "39248615",
+      "name": "flow-chart",
+      "font_class": "flow-chart1",
+      "unicode": "e9dc",
+      "unicode_decimal": 59868
+    }
+  ]
+}

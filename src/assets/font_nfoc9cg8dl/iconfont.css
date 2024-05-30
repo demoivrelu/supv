@@ -1,24 +1,18 @@
 @font-face {
   font-family: "iconfont"; /* Project id  */
-  src: url('iconfont.ttf?t=1695801779631') format('truetype');
+  src: url('iconfont.ttf?t=1717042400503') format('truetype');
 }
 
 .iconfont {
-  position: absolute;
   font-family: "iconfont" !important;
-  font-size: 30px;
+  font-size: 16px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 .icon-fenzishengwuxuepingtai-hui:before {
   content: "\e510";
-}
-
-.icon-triangle:before {
-  content: "\e839";
 }
 
 .icon-More_px:before {
@@ -55,6 +49,14 @@
 
 .icon-fenzi1:before {
   content: "\e513";
+}
+
+.icon-flow-chart:before {
+  content: "\e868";
+}
+
+.icon-icons8-flow_chart:before {
+  content: "\e601";
 }
 
 .icon-fenzishi:before {
@@ -117,6 +119,10 @@
   content: "\e84f";
 }
 
+.icon-connections:before {
+  content: "\e850";
+}
+
 .icon-customization-fill:before {
   content: "\e852";
 }
@@ -125,12 +131,8 @@
   content: "\e853";
 }
 
-.icon-document-conversion:before {
-  content: "\e855";
-}
-
 .icon-double-censorship:before {
-  content: "\e856";
+  content: "\e855";
 }
 
 .icon-guide:before {
@@ -169,10 +171,6 @@
   content: "\e86f";
 }
 
-.icon-training:before {
-  content: "\e870";
-}
-
 .icon-video-fill:before {
   content: "\e871";
 }
@@ -187,10 +185,6 @@
 
 .icon-sousuopaixu:before {
   content: "\e87f";
-}
-
-.icon-siyoumojuhuichang:before {
-  content: "\e880";
 }
 
 .icon-zhengban:before {
@@ -212,3 +206,8 @@
 .icon-ChatGPT-blue:before {
   content: "\e501";
 }
+
+.icon-flow-chart1:before {
+  content: "\e9dc";
+}
+

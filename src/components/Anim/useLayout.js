@@ -42,7 +42,6 @@ export function useLayout() {
     }
 
     for (const edge of edges) {
-      console.log('nnnn', edge.source, edge.target);
       dagreGraph.setEdge(edge.source, edge.target);
     }
 
@@ -51,8 +50,6 @@ export function useLayout() {
     // set nodes with updated positions
     return nodes.map((node) => {
       const nodeWithPosition = dagreGraph.node(node.id);
-      console.log('zzzz', nodeWithPosition);
-
       return {
         ...node,
         targetPosition: isHorizontal ? Position.Left : Position.Top,

@@ -6,7 +6,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import App from './App.vue';
 import router from './router';
 import 'element-plus/theme-chalk/index.css';
-import '@/assets/fonts/font_nfoc9cg8dl/iconfont.css';
+// import '@/assets/font_nfoc9cg8dl/iconfont.css';
 
 // const app = createApp(App)
 const app = createApp(App);

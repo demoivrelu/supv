@@ -1,12 +1,12 @@
 import { ref } from 'vue';
 
 const url = 'http://192.168.1.33:81/main-page';
-const proxyUrl = '/srv/STAALL';
-const proxyUrlCMD = '/srv/CMD';
-const proxyUrlLocalId = '/srv/LOCAL-ID-FINDER';
-const proxyUrlChanger = '/srv/LOCAL-ID-CHANGER';
-const proxyUrlBOOT = '/srv/SRV';
-const proxyUrlProjectStatus = '/srv/GET-PROJECT-STATUS';
+// const proxyUrl = '/srv/STAALL';
+// const proxyUrlCMD = '/srv/CMD';
+// const proxyUrlLocalId = '/srv/LOCAL-ID-FINDER';
+// const proxyUrlChanger = '/srv/LOCAL-ID-CHANGER';
+// const proxyUrlBOOT = '/srv/SRV';
+// const proxyUrlProjectStatus = '/srv/GET-PROJECT-STATUS';
 
 const projId = ref(null);
 
@@ -103,10 +103,9 @@ function setLocalId(_projectId, _localId) {
     body: JSON.stringify({ project_id: _projectId, local_id: _localId }),
   })
     .then((response) => response.json())
-    .then((res) => {
-      const t = res;
-      // console.log('setLocalId: ', res);
-    })
+    // .then((res) => {
+    //   console.log('setLocalId: ', res);
+    // })
     .catch((error) => {
       console.error('Error fetching data:', error);
     });
@@ -200,9 +199,9 @@ onmessage = (event) => {
       body: JSON.stringify(event.data.data),
     })
       .then((response) => response.json())
-      .then((res) => {
-        const t = res.data;
-      })
+      // .then((res) => {
+      //   const t = res.data;
+      // })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });

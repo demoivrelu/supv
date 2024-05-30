@@ -628,27 +628,34 @@
         <el-row style="margin-top: 2%; margin-bottom: -4%;">
           <el-col :span="12">
             <div align="left">
-              <el-button class="btn" @click="disp = false">
+              <el-button class="btn" @click="disp = true; flow = false; code = false">
                 <i class="iconfont icon-table icon-class"></i>
               </el-button>
-              <el-button class="btn" @click="disp = true">
+              <el-button class="btn" @click="disp = false; flow = true; code = false">
+                <i class="iconfont icon-flow-chart1 icon-class"></i>
+              </el-button>
+              <el-button class="btn" @click="disp = false; flow = false; code = true">
                 <i class="iconfont icon-code icon-class"></i>
               </el-button>
             </div>
           </el-col>
           <el-col :span="12">
-            <div align="right" v-if="!disp">
+            <div align="right" v-if="disp">
               Loop:
               <el-input-number v-model="loopNum" @change="handleLoopChange" min="0"
                 :disabled="disabled"/>
             </div>
           </el-col>
         </el-row>
-        <div class="data-box" style="margin-top: 5%" v-if="disp" align="left">
+        <div class="data-box" style="margin-top: 5%" v-if="code" align="left">
           <el-scrollbar style="height: 74vh">
             <json-viewer :value="userList" :expand-depth=3 copyable
               style="margin-top: 1%; margin-left: 2%; width: 95%"/>
           </el-scrollbar>
+        </div>
+        <div>
+          <iframe title="flow" class="data-box" v-if="flow" src="/#/anim" style="width: 100%">
+          </iframe>
         </div>
         <VueDraggable
           target="tbody"
@@ -656,7 +663,7 @@
           :animation="150"
           group="people"
           ghostClass="ghost"
-          v-if="!disp"
+          v-if="disp"
         >
           <el-table :data="userList" class="data-box" :disabled="disabled"
             >
@@ -753,11 +760,14 @@ import {
 import { VueDraggable } from 'vue-draggable-plus';
 import * as XLSX from 'xlsx';
 
+// const constructor = new Worker(new URL('./Utils/constructor.js', import.meta.url));
 const worker = new Worker(new URL('./Utils/worker.js', import.meta.url));
 
 const url = 'http://192.168.1.33:81/main-page';
 
-const disp = ref(false);
+const disp = ref(true);
+const flow = ref(false);
+const code = ref(false);
 
 const dialogHelpVisible = ref(false);
 const userDataLoading = ref(false);
@@ -1252,8 +1262,7 @@ function handleData(_val: any) {
     }
   });
   axios.post(`${url}/get-cc-chart`, { id: _val.id }).then((res: any) => {
-    const t = res.data.data;
-    // console.log('get ccdata: ', res.data);
+    console.log('get ccdata: ', res.data);
   });
 }
 
@@ -1297,8 +1306,7 @@ function submit() {
         // console.log(res.data);
         worker.postMessage({ sig: 'project', data: res.data.last_id });
         axios.post(`${url}/get-cc-chart`, { id: res.data.last_id }).then((re: any) => {
-          const t = re;
-          // console.log('get ccdata: ', re.data);
+          console.log('get ccdata: ', re.data);
         });
         ElMessage({
           message: 'Submit successful',
@@ -1314,7 +1322,7 @@ function submit() {
 }
 
 // local_id selected
-const selected = ref(0);
+const selected = ref(-1);
 const mode = ref(false);
 const disabled = ref(false);
 
@@ -1487,37 +1495,83 @@ function conbineStatus(inst: string, sta: string) {
   instrStatus.value[inst] = sta;
 }
 
-// function setClass({
-//   row, column, rowIndex, columnIndex,
-// }) {
-//   if (rowIndex === selected.value && instrStatus.value[row.Instrument] === 'Running') {
-//     console.log('row: ', row);
-//     return 'Running';
-//   }
-//   if (rowIndex === selected.value && instrStatus.value[row.Instrument] === 'Error') {
-//     console.log('row: ', row);
-//     return 'Error';
-//   }
-// }
-
 function setTableStatus(_row: any, _index: any) {
   if (_index === selected.value && instrStatus.value[_row.Instrument] === 'Running') {
     return 'loader-running';
-    // return 'loader-running';
   }
   if (_index === selected.value && instrStatus.value[_row.Instrument] === 'Error') {
     return 'loader-error';
   }
 }
 
+// initial nodes and edges
+function constructor() {
+  const nodes = [];
+  const edges = [];
+  for (let index = 0; index < userList.value.length; index += 1) {
+    const element = userList.value[index];
+    if ((element as any).Instrument !== 'Robot1' && index !== userList.value.length) {
+      nodes.push({
+        id: String(index),
+        position: { x: 0, y: 0 },
+        type: 'process',
+        data: element,
+        origin: index,
+      });
+      edges.push({
+        id: `e${index}-${index + 1}`,
+        source: String(index),
+        target: String(index + 1),
+        type: 'animation',
+        animated: true,
+      });
+    }
+    if ((element as any).Instrument === 'Robot1'
+      && (userList.value[index + 1] as any).Instrument === 'Robot1') {
+      edges.push({
+        id: `e${index - 1}-${index + 2}`,
+        source: String(index - 1),
+        target: String(index + 2),
+        type: 'animation',
+        animated: true,
+        data: element,
+        origin: index,
+      });
+    }
+    if ((element as any).Instrument === 'Robot1'
+      && (userList.value[index - 1] as any).Instrument === 'Robot1') {
+      edges.push({
+        id: `e${index - 2}-${index + 1}`,
+        source: String(index - 2),
+        target: String(index + 1),
+        type: 'animation',
+        animated: true,
+        data: element,
+        origin: index,
+      });
+    }
+  }
+  localStorage.setItem('nodes', JSON.stringify(nodes));
+  localStorage.setItem('edges', JSON.stringify(edges));
+}
+
 onMounted(() => {
-  // setInterval(() => {
-  //   console.log('current ccdata: ,,,,,', ccData);
-  // }, 2000);
+  // if userlist changed post message
+  localStorage.setItem('nodes', JSON.stringify([]));
+  localStorage.setItem('edges', JSON.stringify([]));
+  let tmpUserList = userList.value;
+  setInterval(() => {
+    // tmpUserList = [];
+    if (userList.value !== tmpUserList) {
+      constructor();
+    }
+    tmpUserList = userList.value;
+  }, 2000);
   currentInstance.value = getCurrentInstance();
   worker.onmessage = (event) => {
     // module class
-    if (event.data.sig === 'status' && event.data.data.length !== 0) {
+    if (event.data.sig === 'status' && event.data.data.sta.length !== 0) {
+      localStorage.setItem('status', JSON.stringify(event.data.data));
       event.data.data.sta.forEach((arr: Array<string>) => {
         conbineStatus(arr[0], arr[1]);
         if (arr[1] === 'Running') {
@@ -1526,6 +1580,22 @@ onMounted(() => {
           changeClass(arr[0], arr[1]);
         } else {
           changeClass(arr[0], '');
+        }
+        // to anim
+        if (selected.value !== -1 && userList.value[selected.value].Instrument === arr[0]) {
+          localStorage.setItem('localId', JSON.stringify({
+            id: selected.value,
+            instrument: userList.value[selected.value].Instrument,
+            status: arr[1],
+          }));
+        }
+        // last instrument finished, send ready
+        if (selected.value === -1 && userList.value.length > 0) {
+          localStorage.setItem('localId', JSON.stringify({
+            id: userList.value.length,
+            instrument: userList.value[userList.value.length - 1].Instrument,
+            status: 'Ready',
+          }));
         }
       });
     }
@@ -1562,7 +1632,7 @@ onMounted(() => {
 </script>
 
 <style>
-@import url(../assets/font_viut27d3a7/iconfont.css);
+@import url(../assets/font_nfoc9cg8dl/iconfont.css);
 .el-table .el-table__row,
 .el-table .el-table__header {
   border-bottom: 1px solid #d3dce6;
