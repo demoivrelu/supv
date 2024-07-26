@@ -1,6 +1,9 @@
 import { ref } from 'vue';
+import conf from './config';
 
-const url = 'http://192.168.1.33:81/main-page';
+let token = '';
+// const url = 'http://10.99.150.100:81/main-page';
+// const url = 'http://192.168.1.33:81/main-page';
 // const proxyUrl = '/srv/STAALL';
 // const proxyUrlCMD = '/srv/CMD';
 // const proxyUrlLocalId = '/srv/LOCAL-ID-FINDER';
@@ -30,10 +33,11 @@ const projId = ref(null);
 // }
 async function getSta() {
   let sta = '';
-  await fetch(`${url}/get-status-all`, {
+  await fetch(`${conf.url}/get-status-all`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'token': token,
     },
     body: JSON.stringify({ 'Instrument': 'AAA' }),
   })
@@ -63,10 +67,11 @@ async function getLocalId(_projectId) {
   //   .catch((error) => {
   //     console.error('Error fetching data:', error);
   //   });
-  await fetch(`${url}/local-id-finder`, {
+  await fetch(`${conf.url}/local-id-finder`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'token': token,
     },
     body: JSON.stringify({ project_id: _projectId }),
   })
@@ -95,10 +100,11 @@ function setLocalId(_projectId, _localId) {
   //   .catch((error) => {
   //     console.error('Error fetching data:', error);
   //   });
-  fetch(`${url}/local-id-changer`, {
+  fetch(`${conf.url}/local-id-changer`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'token': token,
     },
     body: JSON.stringify({ project_id: _projectId, local_id: _localId }),
   })
@@ -132,10 +138,11 @@ async function getRunningStatus(_projectId) {
   //   .catch((error) => {
   //     console.error('Error fetching data:', error);
   //   });
-  await fetch(`${url}/get-project-status`, {
+  await fetch(`${conf.url}/get-project-status`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'token': token,
     },
   })
     .then((response) => response.json())
@@ -152,7 +159,66 @@ async function getRunningStatus(_projectId) {
   return status;
 }
 
+async function getRobotPosition() {
+  let position = '';
+  await fetch(`${conf.url}/detail`, {
+    method: 'POST',
+    body: JSON.stringify({ Instrument: 'Robot1' }),
+    headers: {
+      'Content-Type': 'application/json',
+      'token': token,
+    },
+  })
+    .then((response) => response.json())
+    .then((res) => {
+      position = res.Position;
+    })
+    .catch((error) => {
+      console.error('Error fetching data:', error);
+    });
+  return position;
+}
+
+// async function getResFormatter(_inst, _fileContent) {
+//   let resContent = '';
+//   await fetch(`${conf.url}/res-formatter`, {
+//     method: 'POST',
+//     body: JSON.stringify({ Instrument: _inst }),
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'token': token,
+//     },
+//   })
+//     .then((response) => response.json())
+//     .then((res) => {
+//       console.log('getResFormatter: ', res);
+//       // status = res.Status;
+//       resContent = res;
+//     })
+//     .catch((error) => {
+//       console.error('Error fetching data:', error);
+//     });
+//   return resContent;
+// }
+
 onmessage = (event) => {
+  // get user info
+  if (event.data.sig === 'info') {
+    token = event.data.data.token;
+  }
+  // change mark
+  if (event.data.sig === 'mark') {
+    // mark = event.data.data;
+    console.log('mark: ', event.data.data);
+    fetch(`${conf.url}/mark`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': token,
+      },
+      body: JSON.stringify(event.data.data),
+    });
+  }
   if (event.data.sig === 'command') {
     // fetch(proxyUrlCMD, {
     //   method: 'POST',
@@ -161,10 +227,12 @@ onmessage = (event) => {
     //   },
     //   body: JSON.stringify(event.data.data),
     // });
-    fetch(`${url}/cmd`, {
+    // fetch('http://127.0.0.1:8001/WebService/CMD', {
+    fetch(`${conf.url}/cmd`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'token': token,
       },
       body: JSON.stringify(event.data.data),
     });
@@ -191,10 +259,11 @@ onmessage = (event) => {
     //   .catch((error) => {
     //     console.error('Error fetching data:', error);
     //   });
-    fetch(`${url}/cc`, {
+    fetch(`${conf.url}/cc`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'token': token,
       },
       body: JSON.stringify(event.data.data),
     })
@@ -206,6 +275,9 @@ onmessage = (event) => {
         console.error('Error fetching data:', error);
       });
   }
+  // if (event.data.sig === 'file-content') {
+  //   console.log('... res content get', event.data.data);
+  // }
 };
 
 // template local_id memory
@@ -229,5 +301,15 @@ setInterval(() => {
 setInterval(() => {
   getSta('AAA').then((res) => {
     postMessage({ sig: 'status', data: res });
+    console.log(res);
+  });
+  // getRobotPosition().then((res) => {
+  //   postMessage({ sig: 'position', data: res });
+  // });
+}, 1500);
+
+setInterval(() => {
+  getRobotPosition().then((res) => {
+    postMessage({ sig: 'position', data: res });
   });
 }, 1500);

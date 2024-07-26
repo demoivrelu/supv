@@ -9,6 +9,7 @@ import thermo from '@/assets/img/thermo.png';
 import hamilton from '@/assets/img/hamilton.png';
 import discover from '@/assets/img/discover.png';
 import gc from '@/assets/img/gc.png';
+import AAA from '@/assets/img/AAA.png';
 
 const props = defineProps({
   data: {
@@ -82,6 +83,7 @@ function chooseInstr() {
     case 'GC': return gc;
     case 'Discover': return discover;
     case 'Robot1': return robot1;
+    case 'AAA': return AAA;
     default: return '';
   }
 }

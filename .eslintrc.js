@@ -25,7 +25,21 @@ module.exports = {
     "global-require": 0,
     "@typescript-eslint/no-var-requires": 0,
     "@typescript-eslint/no-explicit-any": ["off"],
+    "function-paren-newline": "off",
     // "vue/setup-compiler-macros": 0,
-    // 'linebreak-style': ["error", "windows"],
+
+    "no-param-reassign": [
+      2,
+      {
+        "props": true,
+        "ignorePropertyModificationsFor": [
+          "config",
+          "res", // for Express responses
+          "item", // for Express responses
+          "options" // for vuex state 解决assignment to property of function parameter ‘state‘
+        ]
+      }
+    ],
+    'linebreak-style': ["error", "windows"],
   },
 };

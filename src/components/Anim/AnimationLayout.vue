@@ -290,11 +290,11 @@ defineExpose({ nodes });
   }
 }
 
-@import "https://cdn.jsdelivr.net/npm/@vue-flow/core@1.33.6/dist/style.css";
+/* @import "https://cdn.jsdelivr.net/npm/@vue-flow/core@1.33.6/dist/style.css";
 @import "https://cdn.jsdelivr.net/npm/@vue-flow/core@1.33.6/dist/theme-default.css";
 @import "https://cdn.jsdelivr.net/npm/@vue-flow/controls@latest/dist/style.css";
 @import "https://cdn.jsdelivr.net/npm/@vue-flow/minimap@latest/dist/style.css";
-@import "https://cdn.jsdelivr.net/npm/@vue-flow/node-resizer@latest/dist/style.css";
+@import "https://cdn.jsdelivr.net/npm/@vue-flow/node-resizer@latest/dist/style.css"; */
 @import '@vue-flow/core/dist/style.css';
 html,
 body,

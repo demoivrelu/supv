@@ -8,6 +8,16 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView,
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('../components/LoginPage.vue'),
+  },
+  // {
+  //   path: '/layout',
+  //   name: 'layout',
+  //   component: () => import('../components/LayoutPage.vue'),
+  // },
+  {
     path: '/supv',
     name: 'supv',
     component: () => import('../components/CamCheck.vue'),
