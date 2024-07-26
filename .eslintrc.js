@@ -40,6 +40,6 @@ module.exports = {
         ]
       }
     ],
-    'linebreak-style': ["error", "windows"],
+    // 'linebreak-style': ["error", "windows"],
   },
 };
